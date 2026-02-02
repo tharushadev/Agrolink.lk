@@ -8,33 +8,28 @@ Original file is located at
 """
 
 import pandas as pd
-import numpy as np
 
-df = pd.read_csv('crop_production.csv')  # if uploaded directly
-df.head()
+df = pd.read_csv('crop_production.csv')
 
-df.info()
-df.describe()
+df[['Crop', 'Production']].head()
 
-df = df.dropna(subset=['Production'])
-
-df['Crop'] = df['Crop'].str.lower().str.strip()
-df['Season'] = df['Season'].str.lower().str.strip()
-df['District_Name'] = df['District_Name'].str.lower().str.strip()
-
-threshold = df['Production'].median()
-threshold
-
-df['success_label'] = np.where(
-    df['Production'] >= threshold, 1, 0
+df['success_label'] = df.groupby('Crop')['Production'].transform(
+    lambda x: (x >= x.median()).astype(int)
 )
 
 df['success_label'].value_counts()
+df[df['Crop'] == df['Crop'].iloc[0]][['Crop', 'Production', 'success_label']].head()
 
 final_df = df[
     ['Crop', 'Season', 'District_Name', 'Area', 'Production', 'success_label']
 ]
 
-final_df.head()
+final_df = final_df.rename(columns={
+    'Crop': 'crop_type',
+    'Season': 'season',
+    'District_Name': 'region',
+    'Area': 'area_hectare',
+    'Production': 'production'
+})
 
 final_df.to_csv('agrolink_core_dataset.csv', index=False)
