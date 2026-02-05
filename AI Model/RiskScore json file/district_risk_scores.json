@@ -1,0 +1,332 @@
+[
+    {
+        "district":"AMPARA",
+        "season":"Maha",
+        "baseRiskScore":51.2,
+        "riskLabel":"Medium Risk"
+    },
+    {
+        "district":"AMPARA",
+        "season":"Yala",
+        "baseRiskScore":31.3,
+        "riskLabel":"Medium Risk"
+    },
+    {
+        "district":"ANURADHAPURA",
+        "season":"Maha",
+        "baseRiskScore":48.7,
+        "riskLabel":"Medium Risk"
+    },
+    {
+        "district":"ANURADHAPURA",
+        "season":"Yala",
+        "baseRiskScore":38.5,
+        "riskLabel":"Medium Risk"
+    },
+    {
+        "district":"BADULLA",
+        "season":"Maha",
+        "baseRiskScore":43.3,
+        "riskLabel":"Medium Risk"
+    },
+    {
+        "district":"BADULLA",
+        "season":"Yala",
+        "baseRiskScore":32.0,
+        "riskLabel":"Medium Risk"
+    },
+    {
+        "district":"BATTICALOA",
+        "season":"Maha",
+        "baseRiskScore":77.3,
+        "riskLabel":"High Risk"
+    },
+    {
+        "district":"BATTICALOA",
+        "season":"Yala",
+        "baseRiskScore":44.4,
+        "riskLabel":"Medium Risk"
+    },
+    {
+        "district":"COLOMBO",
+        "season":"Maha",
+        "baseRiskScore":34.9,
+        "riskLabel":"Medium Risk"
+    },
+    {
+        "district":"COLOMBO",
+        "season":"Yala",
+        "baseRiskScore":51.7,
+        "riskLabel":"Medium Risk"
+    },
+    {
+        "district":"GALLE",
+        "season":"Maha",
+        "baseRiskScore":43.5,
+        "riskLabel":"Medium Risk"
+    },
+    {
+        "district":"GALLE",
+        "season":"Yala",
+        "baseRiskScore":38.2,
+        "riskLabel":"Medium Risk"
+    },
+    {
+        "district":"GAMPAHA",
+        "season":"Maha",
+        "baseRiskScore":34.1,
+        "riskLabel":"Medium Risk"
+    },
+    {
+        "district":"GAMPAHA",
+        "season":"Yala",
+        "baseRiskScore":38.4,
+        "riskLabel":"Medium Risk"
+    },
+    {
+        "district":"HAMBANTOTA",
+        "season":"Maha",
+        "baseRiskScore":38.7,
+        "riskLabel":"Medium Risk"
+    },
+    {
+        "district":"HAMBANTOTA",
+        "season":"Yala",
+        "baseRiskScore":29.8,
+        "riskLabel":"Medium Risk"
+    },
+    {
+        "district":"JAFFNA",
+        "season":"Maha",
+        "baseRiskScore":83.1,
+        "riskLabel":"High Risk"
+    },
+    {
+        "district":"KALUTARA",
+        "season":"Maha",
+        "baseRiskScore":35.3,
+        "riskLabel":"Medium Risk"
+    },
+    {
+        "district":"KALUTARA",
+        "season":"Yala",
+        "baseRiskScore":42.9,
+        "riskLabel":"Medium Risk"
+    },
+    {
+        "district":"KANDY",
+        "season":"Maha",
+        "baseRiskScore":38.3,
+        "riskLabel":"Medium Risk"
+    },
+    {
+        "district":"KANDY",
+        "season":"Yala",
+        "baseRiskScore":36.2,
+        "riskLabel":"Medium Risk"
+    },
+    {
+        "district":"KEGALLE",
+        "season":"Maha",
+        "baseRiskScore":39.6,
+        "riskLabel":"Medium Risk"
+    },
+    {
+        "district":"KEGALLE",
+        "season":"Yala",
+        "baseRiskScore":34.9,
+        "riskLabel":"Medium Risk"
+    },
+    {
+        "district":"KILINOCHCHI",
+        "season":"Yala",
+        "baseRiskScore":72.2,
+        "riskLabel":"High Risk"
+    },
+    {
+        "district":"KILLINOCHCHI",
+        "season":"Maha",
+        "baseRiskScore":66.5,
+        "riskLabel":"High Risk"
+    },
+    {
+        "district":"KURUNEGALA",
+        "season":"Maha",
+        "baseRiskScore":42.0,
+        "riskLabel":"Medium Risk"
+    },
+    {
+        "district":"KURUNEGALA",
+        "season":"Yala",
+        "baseRiskScore":34.0,
+        "riskLabel":"Medium Risk"
+    },
+    {
+        "district":"MAHAWELI  'H'",
+        "season":"Yala",
+        "baseRiskScore":21.5,
+        "riskLabel":"Low Risk"
+    },
+    {
+        "district":"MAHAWELI 'H'",
+        "season":"Maha",
+        "baseRiskScore":24.8,
+        "riskLabel":"Low Risk"
+    },
+    {
+        "district":"MANNAR",
+        "season":"Maha",
+        "baseRiskScore":57.7,
+        "riskLabel":"High Risk"
+    },
+    {
+        "district":"MANNAR",
+        "season":"Yala",
+        "baseRiskScore":78.1,
+        "riskLabel":"High Risk"
+    },
+    {
+        "district":"MATALE",
+        "season":"Maha",
+        "baseRiskScore":45.5,
+        "riskLabel":"Medium Risk"
+    },
+    {
+        "district":"MATALE",
+        "season":"Yala",
+        "baseRiskScore":45.8,
+        "riskLabel":"Medium Risk"
+    },
+    {
+        "district":"MATARA",
+        "season":"Maha",
+        "baseRiskScore":40.2,
+        "riskLabel":"Medium Risk"
+    },
+    {
+        "district":"MATARA",
+        "season":"Yala",
+        "baseRiskScore":33.9,
+        "riskLabel":"Medium Risk"
+    },
+    {
+        "district":"MONARAGALA",
+        "season":"Maha",
+        "baseRiskScore":36.5,
+        "riskLabel":"Medium Risk"
+    },
+    {
+        "district":"MONARAGALA",
+        "season":"Yala",
+        "baseRiskScore":40.4,
+        "riskLabel":"Medium Risk"
+    },
+    {
+        "district":"MULLATIVU",
+        "season":"Maha",
+        "baseRiskScore":90.3,
+        "riskLabel":"High Risk"
+    },
+    {
+        "district":"MULLATIVU",
+        "season":"Yala",
+        "baseRiskScore":53.4,
+        "riskLabel":"Medium Risk"
+    },
+    {
+        "district":"NUWARA ELIYA",
+        "season":"Maha",
+        "baseRiskScore":44.4,
+        "riskLabel":"Medium Risk"
+    },
+    {
+        "district":"NUWARA ELIYA",
+        "season":"Yala",
+        "baseRiskScore":45.9,
+        "riskLabel":"Medium Risk"
+    },
+    {
+        "district":"POLONNARUWA",
+        "season":"Maha",
+        "baseRiskScore":42.9,
+        "riskLabel":"Medium Risk"
+    },
+    {
+        "district":"POLONNARUWA",
+        "season":"Yala",
+        "baseRiskScore":27.0,
+        "riskLabel":"Medium Risk"
+    },
+    {
+        "district":"PUTTALAM",
+        "season":"Maha",
+        "baseRiskScore":46.2,
+        "riskLabel":"Medium Risk"
+    },
+    {
+        "district":"PUTTALAM",
+        "season":"Yala",
+        "baseRiskScore":39.7,
+        "riskLabel":"Medium Risk"
+    },
+    {
+        "district":"RATNAPURA",
+        "season":"Maha",
+        "baseRiskScore":44.6,
+        "riskLabel":"Medium Risk"
+    },
+    {
+        "district":"RATNAPURA",
+        "season":"Yala",
+        "baseRiskScore":43.6,
+        "riskLabel":"Medium Risk"
+    },
+    {
+        "district":"SRI LANKA",
+        "season":"Maha",
+        "baseRiskScore":46.0,
+        "riskLabel":"Medium Risk"
+    },
+    {
+        "district":"SRI LANKA",
+        "season":"Yala",
+        "baseRiskScore":31.4,
+        "riskLabel":"Medium Risk"
+    },
+    {
+        "district":"TRINCOMALEE",
+        "season":"Maha",
+        "baseRiskScore":62.9,
+        "riskLabel":"High Risk"
+    },
+    {
+        "district":"TRINCOMALEE",
+        "season":"Yala",
+        "baseRiskScore":22.3,
+        "riskLabel":"Low Risk"
+    },
+    {
+        "district":"UDAWALAWE",
+        "season":"Maha",
+        "baseRiskScore":25.6,
+        "riskLabel":"Medium Risk"
+    },
+    {
+        "district":"UDAWALAWE",
+        "season":"Yala",
+        "baseRiskScore":26.4,
+        "riskLabel":"Medium Risk"
+    },
+    {
+        "district":"VAVUNIYA",
+        "season":"Maha",
+        "baseRiskScore":69.2,
+        "riskLabel":"High Risk"
+    },
+    {
+        "district":"VAVUNIYA",
+        "season":"Yala",
+        "baseRiskScore":41.5,
+        "riskLabel":"Medium Risk"
+    }
+]
