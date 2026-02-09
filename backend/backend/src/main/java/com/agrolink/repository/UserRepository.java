@@ -5,6 +5,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.Optional;
 
 public interface UserRepository extends MongoRepository<User, String> {
-    // Custom query to find a user by their email/username
-    Optional<User> findByUsername(String username);
+    // ✅ Find by Phone Number
+    Optional<User> findByPhoneNumber(String phoneNumber);
 }

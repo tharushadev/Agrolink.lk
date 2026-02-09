@@ -7,27 +7,29 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class User {
     @Id
     private String id;
-    private String username; // This will be the Email
-    private String password; // In a real app, we encrypt this!
-    private String role;     // "FARMER" or "INVESTOR"
-    private String nic;      // Only for Farmers
 
-    // Constructors
+    private String phoneNumber; // ✅ Changed from username
+    private String password;
+    private String role;
+    private String nic;
+    private String profileImage;
+    private int profileStrength = 40;
+
     public User() {}
 
-    public User(String username, String password, String role, String nic) {
-        this.username = username;
+    public User(String phoneNumber, String password, String role, String nic) {
+        this.phoneNumber = phoneNumber;
         this.password = password;
         this.role = role;
         this.nic = nic;
     }
 
-    // Getters and Setters
+    // --- GETTERS & SETTERS ---
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 
-    public String getUsername() { return username; }
-    public void setUsername(String username) { this.username = username; }
+    public String getPhoneNumber() { return phoneNumber; }
+    public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
 
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
@@ -37,4 +39,10 @@ public class User {
 
     public String getNic() { return nic; }
     public void setNic(String nic) { this.nic = nic; }
+
+    public String getProfileImage() { return profileImage; }
+    public void setProfileImage(String profileImage) { this.profileImage = profileImage; }
+
+    public int getProfileStrength() { return profileStrength; }
+    public void setProfileStrength(int profileStrength) { this.profileStrength = profileStrength; }
 }
