@@ -32,4 +32,11 @@ public class FarmerProjectController {
     public List<FarmerProject> getAllProjects() {
         return projectRepository.findAll();
     }
+
+    // 4. Delete a Project
+    @DeleteMapping("/delete/{id}")
+    public String deleteProject(@PathVariable String id) {
+        projectRepository.deleteById(id);
+        return "Project deleted successfully!";
+    }
 }
