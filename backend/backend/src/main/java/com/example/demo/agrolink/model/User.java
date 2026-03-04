@@ -9,7 +9,7 @@ public class User {
     private String id;
     private String username; // This will be the Email
     private String password; // In a real app, we encrypt this!
-    private String role; // "FARMER" or "INVESTOR"
+    private String role; // "FARMER", "INVESTOR", or "ADMIN"
     private String nic; // Only for Farmers
 
     // Constructors
