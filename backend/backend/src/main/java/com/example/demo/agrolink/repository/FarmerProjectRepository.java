@@ -7,4 +7,7 @@ import java.util.List;
 public interface FarmerProjectRepository extends MongoRepository<FarmerProject, String> {
     // Custom query: Find all projects belonging to one farmer
     List<FarmerProject> findByFarmerId(String farmerId);
+
+    // Custom query: Find all projects by status
+    List<FarmerProject> findByStatus(FarmerProject.ProjectStatus status);
 }
