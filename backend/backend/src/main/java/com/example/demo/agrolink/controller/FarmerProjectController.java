@@ -78,8 +78,19 @@ public class FarmerProjectController {
             String yield = approvalData.get("verifiedExpectedYield").toString();
             String income = approvalData.get("estimatedIncome").toString();
 
+            Double unitPrice = null;
+            Integer totalUnits = null;
+
+            if (approvalData.get("unitPrice") != null) {
+                unitPrice = Double.valueOf(approvalData.get("unitPrice").toString());
+            }
+
+            if (approvalData.get("totalUnits") != null) {
+                totalUnits = Integer.valueOf(approvalData.get("totalUnits").toString());
+            }
+
             FarmerProject approvedProject = projectService.approveProject(projectId, goal, minStart, minInvest, yield,
-                    income);
+                    income, unitPrice, totalUnits);
             return org.springframework.http.ResponseEntity.ok(approvedProject);
         } catch (Exception e) {
             return org.springframework.http.ResponseEntity.badRequest()

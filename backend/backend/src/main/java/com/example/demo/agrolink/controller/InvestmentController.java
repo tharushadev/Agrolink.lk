@@ -1,9 +1,11 @@
 package com.example.demo.agrolink.controller;
 
+import com.example.demo.agrolink.dto.PurchaseUnitsRequest;
 import com.example.demo.agrolink.model.FarmerProject;
 import com.example.demo.agrolink.model.Investment;
 import com.example.demo.agrolink.repository.FarmerProjectRepository;
 import com.example.demo.agrolink.repository.InvestmentRepository;
+import com.example.demo.agrolink.service.InvestmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +24,9 @@ public class InvestmentController {
 
     @Autowired
     private FarmerProjectRepository projectRepository;
+
+    @Autowired
+    private InvestmentService investmentService;
 
     // 1. Make an investment
     @PostMapping("/invest")
@@ -50,7 +55,11 @@ public class InvestmentController {
         }
 
         // Save Investment
-        Investment investment = new Investment(projectId, investorId, amount);
+        Investment investment = Investment.builder()
+            .projectId(projectId)
+            .investorId(investorId)
+            .amount(amount)
+            .build();
         investmentRepository.save(investment);
 
         // Update Project
@@ -68,6 +77,27 @@ public class InvestmentController {
 
         return ResponseEntity.ok(Map.of("message", "Investment successful!", "investment", investment, "projectStatus",
                 project.getStatus()));
+    }
+
+    @PostMapping("/purchase-units")
+    public ResponseEntity<?> purchaseUnits(@RequestBody PurchaseUnitsRequest requestData) {
+        if (requestData.getProjectId() == null || requestData.getInvestorId() == null || requestData.getQuantity() == null) {
+            return ResponseEntity.badRequest().body("projectId, investorId and quantity are required");
+        }
+
+        try {
+            Investment investment = investmentService.purchaseUnits(
+                    requestData.getProjectId(),
+                    requestData.getInvestorId(),
+                    requestData.getQuantity());
+
+            return ResponseEntity.ok(Map.of(
+                    "message", "Unit purchase successful!",
+                    "investment", investment,
+                    "availableUnits", investment.getAvailableUnits()));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     // 2. Get investments for a project

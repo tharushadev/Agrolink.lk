@@ -35,6 +35,9 @@ public class FarmerProject {
     private Double totalFundingGoal; // Set by admin
     private Double minimumFundingToStart; // Set by admin
     private Double currentFundingAmount = 0.0;
+    private Double unitPrice;
+    private Integer totalUnits;
+    private Integer availableUnits;
     private Double minimumInvestmentPerInvestor; // Set by admin
     private String verifiedExpectedYield; // Set by admin
     private String estimatedIncome; // Set by admin
@@ -148,6 +151,30 @@ public class FarmerProject {
 
     public void setCurrentFundingAmount(Double currentFundingAmount) {
         this.currentFundingAmount = currentFundingAmount;
+    }
+
+    public Double getUnitPrice() {
+        return unitPrice;
+    }
+
+    public void setUnitPrice(Double unitPrice) {
+        this.unitPrice = unitPrice;
+    }
+
+    public Integer getTotalUnits() {
+        return totalUnits;
+    }
+
+    public void setTotalUnits(Integer totalUnits) {
+        this.totalUnits = totalUnits;
+    }
+
+    public Integer getAvailableUnits() {
+        return availableUnits;
+    }
+
+    public void setAvailableUnits(Integer availableUnits) {
+        this.availableUnits = availableUnits;
     }
 
     public Double getMinimumInvestmentPerInvestor() {
