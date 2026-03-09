@@ -63,6 +63,20 @@ public class AuthController {
         }
     }
 
+    @PostMapping("/register/farmer")
+    public ResponseEntity<?> registerFarmer(
+            @RequestParam String username,
+            @RequestParam String password,
+            @RequestParam String nic) {
+        if (userRepository.findByUsername(username).isPresent()) {
+            return ResponseEntity.badRequest().body("Error: Username is already taken!");
+        }
+
+        User farmer = buildFarmerUser(username, password, nic);
+        userRepository.save(farmer);
+        return ResponseEntity.ok(buildFarmerSignupResponse(farmer));
+    }
+
     private User buildFarmerUser(String username, String password, String nic) {
         User farmer = new User();
         farmer.setUsername(username);
