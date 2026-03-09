@@ -36,4 +36,15 @@ public class FarmerDocumentStorageService {
 			throw new ResponseStatusException(BAD_REQUEST, "Only non-empty PDF files are allowed for farmer signup.");
 		}
 	}
+
+	private String sanitizeFilename(String originalName) {
+		if (originalName == null || originalName.isBlank()) {
+			return "document.pdf";
+		}
+
+		return Path.of(originalName)
+				.getFileName()
+				.toString()
+				.replaceAll("[^a-zA-Z0-9._-]", "_");
+	}
 }
