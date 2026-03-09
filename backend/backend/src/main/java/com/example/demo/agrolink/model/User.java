@@ -3,6 +3,8 @@ package com.example.demo.agrolink.model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
+
 @Document(collection = "users")
 public class User {
     @Id
@@ -11,6 +13,7 @@ public class User {
     private String password; // In a real app, we encrypt this!
     private String role; // "FARMER" or "INVESTOR"
     private String nic; // Only for Farmers
+    private List<String> farmerDocumentPaths;
 
     // Constructors
     public User() {
