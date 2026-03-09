@@ -14,6 +14,7 @@ public class User {
     private String role; // "FARMER" or "INVESTOR"
     private String nic; // Only for Farmers
     private List<String> farmerDocumentPaths;
+    private List<String> farmerDocumentOriginalNames;
 
     // Constructors
     public User() {
