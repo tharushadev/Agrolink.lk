@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 import java.util.UUID;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
@@ -69,5 +70,15 @@ public class FarmerDocumentStorageService {
 		} catch (IOException exception) {
 			throw new ResponseStatusException(INTERNAL_SERVER_ERROR, "Failed to store farmer signup document.", exception);
 		}
+	}
+
+	public List<StoredFarmerDocument> storeDocuments(List<MultipartFile> documents) {
+		if (documents == null || documents.isEmpty()) {
+			throw new ResponseStatusException(BAD_REQUEST, "At least one PDF file is required for farmer signup.");
+		}
+
+		return documents.stream()
+				.map(this::storeDocument)
+				.toList();
 	}
 }
