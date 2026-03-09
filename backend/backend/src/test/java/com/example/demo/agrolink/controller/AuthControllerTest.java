@@ -15,10 +15,10 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(AuthController.class)
@@ -60,5 +60,24 @@ class AuthControllerTest {
                 .andExpect(jsonPath("$.role").value("FARMER"))
                 .andExpect(jsonPath("$.username").value("farmer@example.com"))
                 .andExpect(jsonPath("$.documentCount").value(1));
+    }
+
+    @Test
+    void rejectsDuplicateUsernameForFarmerSignup() throws Exception {
+        MockMultipartFile document = new MockMultipartFile(
+                "documents",
+                "nic-proof.pdf",
+                "application/pdf",
+                "pdf-content".getBytes());
+
+        given(userRepository.findByUsername("farmer@example.com")).willReturn(Optional.of(new User()));
+
+        mockMvc.perform(multipart("/api/auth/register/farmer")
+                        .file(document)
+                        .param("username", "farmer@example.com")
+                        .param("password", "secret")
+                        .param("nic", "123456789V"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("Error: Username is already taken!"));
     }
 }
