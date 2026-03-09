@@ -62,4 +62,13 @@ public class AuthController {
             return ResponseEntity.status(404).body("User not found");
         }
     }
+
+    private User buildFarmerUser(String username, String password, String nic) {
+        User farmer = new User();
+        farmer.setUsername(username);
+        farmer.setPassword(password);
+        farmer.setRole("FARMER");
+        farmer.setNic(nic);
+        return farmer;
+    }
 }
