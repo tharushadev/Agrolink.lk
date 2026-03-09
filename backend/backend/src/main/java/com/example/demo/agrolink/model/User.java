@@ -64,6 +64,14 @@ public class User {
         return nic;
     }
 
+    public List<String> getFarmerDocumentPaths() {
+        return farmerDocumentPaths;
+    }
+
+    public List<String> getFarmerDocumentOriginalNames() {
+        return farmerDocumentOriginalNames;
+    }
+
     public void setNic(String nic) {
         this.nic = nic;
     }
