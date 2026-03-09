@@ -71,4 +71,13 @@ public class AuthController {
         farmer.setNic(nic);
         return farmer;
     }
+
+    private Map<String, Object> buildFarmerSignupResponse(User farmer) {
+        return Map.of(
+                "message", "Farmer registered successfully!",
+                "userId", farmer.getId(),
+                "role", farmer.getRole(),
+                "username", farmer.getUsername(),
+                "documentCount", farmer.getFarmerDocumentPaths() == null ? 0 : farmer.getFarmerDocumentPaths().size());
+    }
 }
