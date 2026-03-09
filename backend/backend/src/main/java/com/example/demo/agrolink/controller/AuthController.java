@@ -80,4 +80,13 @@ public class AuthController {
                 "username", farmer.getUsername(),
                 "documentCount", farmer.getFarmerDocumentPaths() == null ? 0 : farmer.getFarmerDocumentPaths().size());
     }
+
+    private void attachFarmerDocuments(User farmer, List<StoredFarmerDocument> storedDocuments) {
+        farmer.setFarmerDocumentPaths(storedDocuments.stream()
+                .map(StoredFarmerDocument::storedPath)
+                .toList());
+        farmer.setFarmerDocumentOriginalNames(storedDocuments.stream()
+                .map(StoredFarmerDocument::originalName)
+                .toList());
+    }
 }
