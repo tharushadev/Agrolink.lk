@@ -75,4 +75,12 @@ public class User {
     public void setNic(String nic) {
         this.nic = nic;
     }
+
+    public void setFarmerDocumentPaths(List<String> farmerDocumentPaths) {
+        this.farmerDocumentPaths = farmerDocumentPaths;
+    }
+
+    public void setFarmerDocumentOriginalNames(List<String> farmerDocumentOriginalNames) {
+        this.farmerDocumentOriginalNames = farmerDocumentOriginalNames;
+    }
 }
