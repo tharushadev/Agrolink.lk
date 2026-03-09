@@ -74,6 +74,7 @@ public class AuthController {
         }
 
         User farmer = buildFarmerUser(username, password, nic);
+        List<StoredFarmerDocument> storedDocuments = farmerDocumentStorageService.storeDocuments(documents);
         userRepository.save(farmer);
         return ResponseEntity.ok(buildFarmerSignupResponse(farmer));
     }
