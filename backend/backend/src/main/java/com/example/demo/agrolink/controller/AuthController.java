@@ -21,6 +21,9 @@ public class AuthController {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private FarmerDocumentStorageService farmerDocumentStorageService;
+
     // --- 1. REGISTER API ---
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody User newUser) {
