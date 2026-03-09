@@ -63,11 +63,12 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/register/farmer")
+    @PostMapping(value = "/register/farmer", consumes = "multipart/form-data")
     public ResponseEntity<?> registerFarmer(
             @RequestParam String username,
             @RequestParam String password,
-            @RequestParam String nic) {
+            @RequestParam String nic,
+            @RequestParam("documents") List<MultipartFile> documents) {
         if (userRepository.findByUsername(username).isPresent()) {
             return ResponseEntity.badRequest().body("Error: Username is already taken!");
         }
