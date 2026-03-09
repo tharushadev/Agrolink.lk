@@ -1,11 +1,15 @@
 package com.example.demo.agrolink.controller;
 
+import com.example.demo.agrolink.dto.StoredFarmerDocument;
 import com.example.demo.agrolink.model.User;
 import com.example.demo.agrolink.repository.UserRepository;
+import com.example.demo.agrolink.service.FarmerDocumentStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
