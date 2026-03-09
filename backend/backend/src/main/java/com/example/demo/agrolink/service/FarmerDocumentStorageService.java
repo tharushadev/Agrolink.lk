@@ -2,10 +2,14 @@ package com.example.demo.agrolink.service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Files;
+
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @Service
 public class FarmerDocumentStorageService {
@@ -21,5 +25,15 @@ public class FarmerDocumentStorageService {
 		Path directoryPath = getUploadDirectoryPath();
 		Files.createDirectories(directoryPath);
 		return directoryPath;
+	}
+
+	private void validatePdfFile(MultipartFile document) {
+		String originalName = document.getOriginalFilename();
+		boolean hasPdfExtension = originalName != null && originalName.toLowerCase().endsWith(".pdf");
+		boolean hasPdfContentType = "application/pdf".equalsIgnoreCase(document.getContentType());
+
+		if (document.isEmpty() || (!hasPdfExtension && !hasPdfContentType)) {
+			throw new ResponseStatusException(BAD_REQUEST, "Only non-empty PDF files are allowed for farmer signup.");
+		}
 	}
 }
