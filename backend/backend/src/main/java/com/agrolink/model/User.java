@@ -8,35 +8,32 @@ public class User {
     @Id
     private String id;
 
-    // ✅ New Fields from your UI update
     private String firstName;
     private String lastName;
-
-    // ✅ Phone number is now the ONLY way to log in
     private String phoneNumber;
     private String password;
-
     private String role;
     private String nic;
 
-    // ✅ Added field for the Grama Niladari Certificate (Will store the image URL/Path)
     private String gnCertificateUrl;
+
+    private Double latitude;
+    private Double longitude;
+    private String city;
 
     private String profileImage;
     private int profileStrength = 40;
 
+    // ✅ NEW: FARMER-SPECIFIC FIELDS
+    // Using Integer and Boolean (capital letters) so they can be NULL for Investors
+    private Integer yearsOfExperience;
+    private Integer numberOfProjects;
+    private Integer successfulProjects;
+    private Boolean isVerified;
+
     public User() {}
 
-    public User(String firstName, String lastName, String phoneNumber, String password, String role, String nic) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.phoneNumber = phoneNumber;
-        this.password = password;
-        this.role = role;
-        this.nic = nic;
-    }
-
-    // --- GETTERS & SETTERS ---
+    // --- STANDARD GETTERS & SETTERS ---
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 
@@ -61,9 +58,31 @@ public class User {
     public String getGnCertificateUrl() { return gnCertificateUrl; }
     public void setGnCertificateUrl(String gnCertificateUrl) { this.gnCertificateUrl = gnCertificateUrl; }
 
+    public Double getLatitude() { return latitude; }
+    public void setLatitude(Double latitude) { this.latitude = latitude; }
+
+    public Double getLongitude() { return longitude; }
+    public void setLongitude(Double longitude) { this.longitude = longitude; }
+
+    public String getCity() { return city; }
+    public void setCity(String city) { this.city = city; }
+
     public String getProfileImage() { return profileImage; }
     public void setProfileImage(String profileImage) { this.profileImage = profileImage; }
 
     public int getProfileStrength() { return profileStrength; }
     public void setProfileStrength(int profileStrength) { this.profileStrength = profileStrength; }
+
+    // --- NEW GETTERS & SETTERS FOR FARMERS ---
+    public Integer getYearsOfExperience() { return yearsOfExperience; }
+    public void setYearsOfExperience(Integer yearsOfExperience) { this.yearsOfExperience = yearsOfExperience; }
+
+    public Integer getNumberOfProjects() { return numberOfProjects; }
+    public void setNumberOfProjects(Integer numberOfProjects) { this.numberOfProjects = numberOfProjects; }
+
+    public Integer getSuccessfulProjects() { return successfulProjects; }
+    public void setSuccessfulProjects(Integer successfulProjects) { this.successfulProjects = successfulProjects; }
+
+    public Boolean getIsVerified() { return isVerified; }
+    public void setIsVerified(Boolean isVerified) { this.isVerified = isVerified; }
 }
