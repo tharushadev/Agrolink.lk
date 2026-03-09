@@ -1,5 +1,6 @@
 package com.example.demo.agrolink.service;
 
+import com.example.demo.agrolink.dto.StoredFarmerDocument;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -8,9 +9,11 @@ import org.springframework.web.server.ResponseStatusException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.UUID;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @Service
 public class FarmerDocumentStorageService {
@@ -51,5 +54,20 @@ public class FarmerDocumentStorageService {
 
 	private String buildStoredFilename(String originalName) {
 		return UUID.randomUUID() + "-" + sanitizeFilename(originalName);
+	}
+
+	public StoredFarmerDocument storeDocument(MultipartFile document) {
+		validatePdfFile(document);
+
+		try {
+			String originalName = sanitizeFilename(document.getOriginalFilename());
+			Path uploadPath = ensureUploadDirectoryExists();
+			Path storedPath = uploadPath.resolve(buildStoredFilename(originalName));
+
+			Files.copy(document.getInputStream(), storedPath, StandardCopyOption.REPLACE_EXISTING);
+			return new StoredFarmerDocument(storedPath.toString(), originalName);
+		} catch (IOException exception) {
+			throw new ResponseStatusException(INTERNAL_SERVER_ERROR, "Failed to store farmer signup document.", exception);
+		}
 	}
 }
