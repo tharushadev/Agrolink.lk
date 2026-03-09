@@ -6,9 +6,9 @@ import com.example.demo.agrolink.repository.UserRepository;
 import com.example.demo.agrolink.service.FarmerDocumentStorageService;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
@@ -27,10 +27,10 @@ class AuthControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+        @MockitoBean
     private UserRepository userRepository;
 
-    @MockBean
+        @MockitoBean
     private FarmerDocumentStorageService farmerDocumentStorageService;
 
     @Test
