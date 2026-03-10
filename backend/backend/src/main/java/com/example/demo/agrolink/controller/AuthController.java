@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "*") // Allow phone to access
+@CrossOrigin(origins = "*") // Allow phone to accessSet-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
 public class AuthController {
 
     @Autowired
