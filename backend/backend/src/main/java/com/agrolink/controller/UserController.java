@@ -46,4 +46,49 @@ public class UserController {
         }
         return ResponseEntity.notFound().build();
     }
+    // 3. Update General Profile Details & Calculate Trust Score
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateUserProfile(@PathVariable String id, @RequestBody User updatedData) {
+        Optional<User> userOptional = userRepository.findById(id);
+
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            int strengthBoost = 0;
+
+            if (updatedData.getFirstName() != null) user.setFirstName(updatedData.getFirstName());
+            if (updatedData.getLastName() != null) user.setLastName(updatedData.getLastName());
+            if (updatedData.getNic() != null) user.setNic(updatedData.getNic());
+
+            // ✅ Address Gamification: +5 points if added for the first time
+            if (updatedData.getAddress() != null) {
+                boolean wasAddressEmpty = (user.getAddress() == null || user.getAddress().trim().isEmpty());
+                boolean isNewAddressValid = !updatedData.getAddress().trim().isEmpty();
+
+                if (wasAddressEmpty && isNewAddressValid) {
+                    strengthBoost += 5;
+                }
+                user.setAddress(updatedData.getAddress());
+            }
+
+            // ✅ Skills Gamification: +1 point per NEW skill added
+            if (updatedData.getSkills() != null) {
+                int oldSkillsCount = (user.getSkills() != null) ? user.getSkills().size() : 0;
+                int newSkillsCount = updatedData.getSkills().size();
+
+                if (newSkillsCount > oldSkillsCount) {
+                    strengthBoost += (newSkillsCount - oldSkillsCount);
+                }
+                user.setSkills(updatedData.getSkills());
+            }
+
+            // ✅ Apply the boost directly to the database property
+            if (strengthBoost > 0) {
+                user.setProfileStrength(user.getProfileStrength() + strengthBoost);
+            }
+
+            userRepository.save(user);
+            return ResponseEntity.ok(user);
+        }
+        return ResponseEntity.notFound().build();
+    }
 }

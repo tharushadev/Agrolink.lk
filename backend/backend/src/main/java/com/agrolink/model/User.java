@@ -2,13 +2,19 @@ package com.agrolink.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 @Document(collection = "users")
 public class User {
     @Id
     private String id;
 
+
     private String firstName;
+    private String address;
+    private List<String> skills = new ArrayList<>();
     private String lastName;
     private String phoneNumber;
     private String password;
@@ -23,7 +29,8 @@ public class User {
     private String city;
 
     private String profileImage;
-    private int profileStrength = 40;
+    private Date createdAt = new Date(); // ✅ Automatically sets the date when registered
+    private int profileStrength = 20;    // ✅ Changed default from 40 to 20
 
     // ✅ NEW: FARMER-SPECIFIC FIELDS
     // Using Integer and Boolean (capital letters) so they can be NULL for Investors
@@ -95,4 +102,17 @@ public class User {
     public void setProfileImageUrl(String profileImageUrl) {
         this.profileImageUrl = profileImageUrl;
     }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+    public String getAddress() { return address; }
+    public void setAddress(String address) { this.address = address; }
+
+    public List<String> getSkills() { return skills; }
+    public void setSkills(List<String> skills) { this.skills = skills; }
 }
