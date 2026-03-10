@@ -36,7 +36,7 @@ public class AuthController {
         String username = loginData.get("username");
         String password = loginData.get("password");
 
-        Optional<User> userOpt = userRepository.findByUsername(username);
+        Optional<User> userOpt = userRepository.findByUsername(username)
 
         if (userOpt.isPresent()) {
             User user = userOpt.get();
