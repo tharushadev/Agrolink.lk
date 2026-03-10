@@ -31,12 +31,7 @@ public class AuthController {
     }
 
     // --- 2. LOGIN API ---
-    @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@RequestBody Map<String, String> loginData) {
-        String username = loginData.get("username");
-        String password = loginData.get("password");
-
-        Optional<User> userOpt = userRepository.findByUsername(username)
+   
 
         if (userOpt.isPresent()) {
             User user = userOpt.get();
