@@ -14,6 +14,7 @@ public class User {
     private String password;
     private String role;
     private String nic;
+    private String profileImageUrl;
 
     private String gnCertificateUrl;
 
@@ -85,4 +86,13 @@ public class User {
 
     public Boolean getIsVerified() { return isVerified; }
     public void setIsVerified(Boolean isVerified) { this.isVerified = isVerified; }
+
+    // Add these Getters & Setters at the bottom of the file
+    public String getProfileImageUrl() {
+        return profileImageUrl;
+    }
+
+    public void setProfileImageUrl(String profileImageUrl) {
+        this.profileImageUrl = profileImageUrl;
+    }
 }

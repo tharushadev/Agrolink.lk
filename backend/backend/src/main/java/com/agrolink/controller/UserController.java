@@ -10,36 +10,40 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/api/users") // ✅ CRITICAL: This matches the frontend exactly
 @CrossOrigin(origins = "*")
 public class UserController {
 
     @Autowired
     private UserRepository userRepository;
 
-    @PostMapping("/{userId}/upload-image")
-    public ResponseEntity<?> uploadImage(@PathVariable String userId, @RequestBody Map<String, String> payload) {
-        Optional<User> userOpt = userRepository.findById(userId);
+    // 1. Get User Details
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getUserById(@PathVariable String id) {
+        Optional<User> userOptional = userRepository.findById(id);
 
-        if (userOpt.isPresent()) {
-            User user = userOpt.get();
-
-            // 1. Save the image string
-            user.setProfileImage(payload.get("image"));
-
-            // 2. Increase Profile Strength (Logic: Add 10% for photo)
-            if (user.getProfileStrength() < 50) {
-                user.setProfileStrength(50);
-            }
-
-            userRepository.save(user);
-
-            return ResponseEntity.ok(Map.of(
-                    "message", "Image uploaded successfully",
-                    "newStrength", user.getProfileStrength()
-            ));
-        } else {
-            return ResponseEntity.status(404).body("User not found");
+        if (userOptional.isPresent()) {
+            return ResponseEntity.ok(userOptional.get());
         }
+
+        return ResponseEntity.notFound().build();
+    }
+
+    // 2. Update Profile Image URL
+    @PutMapping("/{id}/profile-image")
+    public ResponseEntity<?> updateProfileImage(@PathVariable String id, @RequestBody Map<String, String> request) {
+        Optional<User> userOptional = userRepository.findById(id);
+
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            // Grab the Cloudinary URL sent by the frontend
+            String newImageUrl = request.get("imageUrl");
+
+            user.setProfileImageUrl(newImageUrl);
+            userRepository.save(user); // Save to MongoDB
+
+            return ResponseEntity.ok(user);
+        }
+        return ResponseEntity.notFound().build();
     }
 }
