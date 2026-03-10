@@ -1,4 +1,5 @@
 package com.agrolink.controller;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.agrolink.model.User;
 import com.agrolink.repository.UserRepository;
@@ -16,6 +17,9 @@ public class UserController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder; // ✅ Added to safely handle passwords
 
     // 1. Get User Details
     @GetMapping("/{id}")
@@ -91,4 +95,29 @@ public class UserController {
         }
         return ResponseEntity.notFound().build();
     }
+
+    // 4. Update Password
+    @PutMapping("/{id}/password")
+    public ResponseEntity<?> updatePassword(@PathVariable String id, @RequestBody Map<String, String> request) {
+        Optional<User> userOptional = userRepository.findById(id);
+
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            String currentPassword = request.get("currentPassword");
+            String newPassword = request.get("newPassword");
+
+            // Check if the current password matches the one in the DB
+            if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+                return ResponseEntity.status(400).body("Invalid current password");
+            }
+
+            // Encode and save the new password
+            user.setPassword(passwordEncoder.encode(newPassword));
+            userRepository.save(user);
+
+            return ResponseEntity.ok("Password updated successfully");
+        }
+        return ResponseEntity.notFound().build();
+    }
+
 }
