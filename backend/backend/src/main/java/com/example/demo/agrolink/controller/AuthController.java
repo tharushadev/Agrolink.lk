@@ -22,14 +22,16 @@ public class AuthController {
     // --- 1. REGISTER API ---
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterRequest request) {
+        String normalizedUsername = normalizeUsername(request.getUsername());
+
         // Check if user already exists
-        if (userRepository.findByUsername(request.getUsername()).isPresent()) {
+        if (userRepository.findByUsernameIgnoreCase(normalizedUsername).isPresent()) {
             return ResponseEntity.badRequest().body("Error: Username is already taken!");
         }
 
         // Save the new user
         User newUser = new User(
-                request.getUsername(),
+                normalizedUsername,
                 request.getPassword(),
                 request.getRole(),
                 request.getNic());
@@ -41,10 +43,10 @@ public class AuthController {
     // --- 2. LOGIN API ---
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@Valid @RequestBody LoginRequest request) {
-        String username = request.getUsername();
+        String username = normalizeUsername(request.getUsername());
         String password = request.getPassword();
 
-        Optional<User> userOpt = userRepository.findByUsername(username);
+        Optional<User> userOpt = userRepository.findByUsernameIgnoreCase(username);
 
         if (userOpt.isPresent()) {
             User user = userOpt.get();
@@ -62,5 +64,9 @@ public class AuthController {
         } else {
             return ResponseEntity.status(404).body("User not found");
         }
+    }
+
+    private String normalizeUsername(String username) {
+        return username == null ? null : username.trim().toLowerCase();
     }
 }
