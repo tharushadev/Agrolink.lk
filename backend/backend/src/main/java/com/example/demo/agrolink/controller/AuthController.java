@@ -7,8 +7,10 @@ import com.example.demo.agrolink.repository.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -18,6 +20,9 @@ public class AuthController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     // --- 1. REGISTER API ---
     @PostMapping("/register")
@@ -32,7 +37,7 @@ public class AuthController {
         // Save the new user
         User newUser = new User(
                 normalizedUsername,
-                request.getPassword(),
+                passwordEncoder.encode(request.getPassword()),
                 request.getRole(),
                 request.getNic());
 
@@ -50,8 +55,15 @@ public class AuthController {
 
         if (userOpt.isPresent()) {
             User user = userOpt.get();
-            // Simple password check (In production, use BCrypt!)
-            if (user.getPassword().equals(password)) {
+            boolean passwordMatches = passwordEncoder.matches(password, user.getPassword())
+                    || user.getPassword().equals(password);
+
+            if (passwordMatches) {
+                if (user.getPassword().equals(password)) {
+                    user.setPassword(passwordEncoder.encode(password));
+                    userRepository.save(user);
+                }
+
                 // Login Success! Return the user data (excluding password)
                 return ResponseEntity.ok(Map.of(
                         "message", "Login Successful",
