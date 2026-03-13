@@ -1,6 +1,7 @@
 package com.example.demo.agrolink.controller;
 
 import com.example.demo.agrolink.dto.RegisterRequest;
+import com.example.demo.agrolink.dto.LoginRequest;
 import com.example.demo.agrolink.model.User;
 import com.example.demo.agrolink.repository.UserRepository;
 import jakarta.validation.Valid;
@@ -8,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -40,9 +40,9 @@ public class AuthController {
 
     // --- 2. LOGIN API ---
     @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@RequestBody Map<String, String> loginData) {
-        String username = loginData.get("username");
-        String password = loginData.get("password");
+    public ResponseEntity<?> loginUser(@Valid @RequestBody LoginRequest request) {
+        String username = request.getUsername();
+        String password = request.getPassword();
 
         Optional<User> userOpt = userRepository.findByUsername(username);
 
