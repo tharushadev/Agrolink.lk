@@ -1,7 +1,9 @@
 package com.example.demo.agrolink.controller;
 
+import com.example.demo.agrolink.dto.RegisterRequest;
 import com.example.demo.agrolink.model.User;
 import com.example.demo.agrolink.repository.UserRepository;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,13 +21,19 @@ public class AuthController {
 
     // --- 1. REGISTER API ---
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody User newUser) {
+    public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterRequest request) {
         // Check if user already exists
-        if (userRepository.findByUsername(newUser.getUsername()).isPresent()) {
+        if (userRepository.findByUsername(request.getUsername()).isPresent()) {
             return ResponseEntity.badRequest().body("Error: Username is already taken!");
         }
 
         // Save the new user
+        User newUser = new User(
+                request.getUsername(),
+                request.getPassword(),
+                request.getRole(),
+                request.getNic());
+
         userRepository.save(newUser);
         return ResponseEntity.ok("User registered successfully!");
     }
