@@ -1,5 +1,6 @@
 package com.example.demo.agrolink.controller;
 
+import com.example.demo.agrolink.dto.AuthResponse;
 import com.example.demo.agrolink.dto.RegisterRequest;
 import com.example.demo.agrolink.dto.LoginRequest;
 import com.example.demo.agrolink.model.User;
@@ -10,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -54,8 +54,12 @@ public class AuthController {
             normalizedRole,
             normalizedNic);
 
-        userRepository.save(newUser);
-        return ResponseEntity.ok("User registered successfully!");
+        User savedUser = userRepository.save(newUser);
+        return ResponseEntity.ok(new AuthResponse(
+            "User registered successfully!",
+            savedUser.getId(),
+            savedUser.getRole(),
+            savedUser.getUsername()));
     }
 
     // --- 2. LOGIN API ---
@@ -77,12 +81,11 @@ public class AuthController {
                     userRepository.save(user);
                 }
 
-                // Login Success! Return the user data (excluding password)
-                return ResponseEntity.ok(Map.of(
-                        "message", "Login Successful",
-                        "userId", user.getId(),
-                        "role", user.getRole(),
-                        "username", user.getUsername()));
+                return ResponseEntity.ok(new AuthResponse(
+                        "Login Successful",
+                        user.getId(),
+                        user.getRole(),
+                        user.getUsername()));
             } else {
                 return ResponseEntity.status(401).body("Invalid Password");
             }
