@@ -12,11 +12,14 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/auth")
 @CrossOrigin(origins = "*") // Allows mobile app clients to access auth endpoints
 public class AuthController {
+
+    private static final Set<String> ALLOWED_ROLES = Set.of("FARMER", "INVESTOR", "ADMIN");
 
     @Autowired
     private UserRepository userRepository;
@@ -28,6 +31,16 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterRequest request) {
         String normalizedUsername = normalizeUsername(request.getUsername());
+        String normalizedRole = normalizeRole(request.getRole());
+        String normalizedNic = normalizeOptional(request.getNic());
+
+        if (!ALLOWED_ROLES.contains(normalizedRole)) {
+            return ResponseEntity.badRequest().body("Invalid role. Allowed roles: FARMER, INVESTOR, ADMIN");
+        }
+
+        if ("FARMER".equals(normalizedRole) && normalizedNic == null) {
+            return ResponseEntity.badRequest().body("NIC is required for FARMER role");
+        }
 
         // Check if user already exists
         if (userRepository.findByUsernameIgnoreCase(normalizedUsername).isPresent()) {
@@ -38,8 +51,8 @@ public class AuthController {
         User newUser = new User(
                 normalizedUsername,
                 passwordEncoder.encode(request.getPassword()),
-                request.getRole(),
-                request.getNic());
+            normalizedRole,
+            normalizedNic);
 
         userRepository.save(newUser);
         return ResponseEntity.ok("User registered successfully!");
@@ -80,5 +93,18 @@ public class AuthController {
 
     private String normalizeUsername(String username) {
         return username == null ? null : username.trim().toLowerCase();
+    }
+
+    private String normalizeRole(String role) {
+        return role == null ? null : role.trim().toUpperCase();
+    }
+
+    private String normalizeOptional(String value) {
+        if (value == null) {
+            return null;
+        }
+
+        String trimmed = value.trim();
+        return trimmed.isEmpty() ? null : trimmed;
     }
 }
