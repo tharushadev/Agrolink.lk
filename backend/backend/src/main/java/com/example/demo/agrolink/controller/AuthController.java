@@ -43,7 +43,7 @@ public class AuthController {
         }
 
         // Check if user already exists
-        if (userRepository.findByUsernameIgnoreCase(normalizedUsername).isPresent()) {
+        if (userRepository.existsByUsernameIgnoreCase(normalizedUsername)) {
             return ResponseEntity.badRequest().body("Error: Username is already taken!");
         }
 
