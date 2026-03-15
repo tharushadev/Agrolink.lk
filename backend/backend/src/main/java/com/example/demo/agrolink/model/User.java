@@ -16,6 +16,8 @@ public class User {
     @JsonIgnore
     private String password; // In a real app, we encrypt this!
     private String role; // "FARMER", "INVESTOR", or "ADMIN"
+
+    @Indexed(unique = true, sparse = true)
     private String nic; // Only for Farmers
 
     // Constructors
