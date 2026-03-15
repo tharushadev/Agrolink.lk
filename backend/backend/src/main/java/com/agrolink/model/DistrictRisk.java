@@ -1,4 +1,4 @@
-package com.example.demo.ai;
+package com.agrolink.model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 

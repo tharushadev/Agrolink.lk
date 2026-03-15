@@ -1,4 +1,6 @@
-package com.example.demo.ai;
+package com.agrolink.repository;
+
+import com.agrolink.model.DistrictRisk;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.Optional;
 
