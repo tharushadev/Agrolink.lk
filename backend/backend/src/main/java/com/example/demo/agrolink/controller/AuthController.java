@@ -50,6 +50,10 @@ public class AuthController {
             return ResponseEntity.badRequest().body("Invalid NIC format for FARMER role");
         }
 
+        if ("FARMER".equals(normalizedRole) && userRepository.existsByNicIgnoreCase(normalizedNic)) {
+            return ResponseEntity.badRequest().body("NIC is already registered for another account");
+        }
+
         // Check if user already exists
         if (userRepository.existsByUsernameIgnoreCase(normalizedUsername)) {
             return ResponseEntity.badRequest().body("Error: Username is already taken!");
