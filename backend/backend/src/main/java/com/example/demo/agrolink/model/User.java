@@ -1,5 +1,6 @@
 package com.example.demo.agrolink.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -11,6 +12,8 @@ public class User {
 
     @Indexed(unique = true)
     private String username; // This will be the Email
+
+    @JsonIgnore
     private String password; // In a real app, we encrypt this!
     private String role; // "FARMER", "INVESTOR", or "ADMIN"
     private String nic; // Only for Farmers
