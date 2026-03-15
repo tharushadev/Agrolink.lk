@@ -5,6 +5,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.index.Indexed;
 
+import java.util.Date;
+
 @Document(collection = "users")
 public class User {
     @Id
@@ -19,6 +21,7 @@ public class User {
 
     @Indexed(unique = true, sparse = true)
     private String nic; // Only for Farmers
+    private Date lastLoginAt;
 
     // Constructors
     public User() {
@@ -70,5 +73,13 @@ public class User {
 
     public void setNic(String nic) {
         this.nic = nic;
+    }
+
+    public Date getLastLoginAt() {
+        return lastLoginAt;
+    }
+
+    public void setLastLoginAt(Date lastLoginAt) {
+        this.lastLoginAt = lastLoginAt;
     }
 }

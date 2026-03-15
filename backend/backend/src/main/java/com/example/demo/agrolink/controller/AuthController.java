@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -88,10 +89,14 @@ public class AuthController {
                     || user.getPassword().equals(password);
 
             if (passwordMatches) {
-                if (user.getPassword().equals(password)) {
+                boolean isLegacyPlaintextPassword = user.getPassword().equals(password);
+
+                if (isLegacyPlaintextPassword) {
                     user.setPassword(passwordEncoder.encode(password));
-                    userRepository.save(user);
                 }
+
+                user.setLastLoginAt(new Date());
+                userRepository.save(user);
 
                 return ResponseEntity.ok(new AuthResponse(
                         "Login Successful",
