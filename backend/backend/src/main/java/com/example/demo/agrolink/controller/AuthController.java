@@ -3,6 +3,7 @@ package com.example.demo.agrolink.controller;
 import com.example.demo.agrolink.dto.AuthResponse;
 import com.example.demo.agrolink.dto.RegisterRequest;
 import com.example.demo.agrolink.dto.LoginRequest;
+import com.example.demo.agrolink.dto.UsernameAvailabilityResponse;
 import com.example.demo.agrolink.model.User;
 import com.example.demo.agrolink.repository.UserRepository;
 import jakarta.validation.Valid;
@@ -98,6 +99,17 @@ public class AuthController {
         } else {
             return ResponseEntity.status(404).body("User not found");
         }
+    }
+
+    @GetMapping("/username-availability")
+    public ResponseEntity<?> checkUsernameAvailability(@RequestParam String username) {
+        String normalizedUsername = normalizeUsername(username);
+        if (normalizedUsername == null || normalizedUsername.isBlank()) {
+            return ResponseEntity.badRequest().body("username is required");
+        }
+
+        boolean exists = userRepository.existsByUsernameIgnoreCase(normalizedUsername);
+        return ResponseEntity.ok(new UsernameAvailabilityResponse(normalizedUsername, !exists));
     }
 
     private String normalizeUsername(String username) {
