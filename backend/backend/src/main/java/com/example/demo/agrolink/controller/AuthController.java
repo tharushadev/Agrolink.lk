@@ -7,7 +7,6 @@ import com.example.demo.agrolink.dto.UsernameAvailabilityResponse;
 import com.example.demo.agrolink.model.User;
 import com.example.demo.agrolink.repository.UserRepository;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -24,11 +23,13 @@ public class AuthController {
     private static final Set<String> ALLOWED_ROLES = Set.of("FARMER", "INVESTOR", "ADMIN");
     private static final Pattern NIC_PATTERN = Pattern.compile("^(\\d{9}[VvXx]|\\d{12})$");
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    public AuthController(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     // --- 1. REGISTER API ---
     @PostMapping("/register")
