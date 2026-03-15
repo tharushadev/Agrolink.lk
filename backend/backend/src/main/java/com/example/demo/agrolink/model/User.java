@@ -2,11 +2,14 @@ package com.example.demo.agrolink.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.index.Indexed;
 
 @Document(collection = "users")
 public class User {
     @Id
     private String id;
+
+    @Indexed(unique = true)
     private String username; // This will be the Email
     private String password; // In a real app, we encrypt this!
     private String role; // "FARMER", "INVESTOR", or "ADMIN"
