@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -20,6 +21,7 @@ import java.util.Set;
 public class AuthController {
 
     private static final Set<String> ALLOWED_ROLES = Set.of("FARMER", "INVESTOR", "ADMIN");
+    private static final Pattern NIC_PATTERN = Pattern.compile("^(\\d{9}[VvXx]|\\d{12})$");
 
     @Autowired
     private UserRepository userRepository;
@@ -40,6 +42,10 @@ public class AuthController {
 
         if ("FARMER".equals(normalizedRole) && normalizedNic == null) {
             return ResponseEntity.badRequest().body("NIC is required for FARMER role");
+        }
+
+        if ("FARMER".equals(normalizedRole) && !isValidSriLankanNic(normalizedNic)) {
+            return ResponseEntity.badRequest().body("Invalid NIC format for FARMER role");
         }
 
         // Check if user already exists
@@ -109,5 +115,9 @@ public class AuthController {
 
         String trimmed = value.trim();
         return trimmed.isEmpty() ? null : trimmed;
+    }
+
+    private boolean isValidSriLankanNic(String nic) {
+        return nic != null && NIC_PATTERN.matcher(nic).matches();
     }
 }
