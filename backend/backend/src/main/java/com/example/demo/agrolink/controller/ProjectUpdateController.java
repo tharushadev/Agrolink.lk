@@ -2,7 +2,6 @@ package com.example.demo.agrolink.controller;
 
 import com.example.demo.agrolink.model.ProjectUpdate;
 import com.example.demo.agrolink.repository.ProjectUpdateRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,8 +13,11 @@ import java.util.Optional;
 @CrossOrigin(origins = "*")
 public class ProjectUpdateController {
 
-    @Autowired
-    private ProjectUpdateRepository updateRepository;
+    private final ProjectUpdateRepository updateRepository;
+
+    public ProjectUpdateController(ProjectUpdateRepository updateRepository) {
+        this.updateRepository = updateRepository;
+    }
 
     // 1. Farmer posts an update (Defaults to PENDING_VERIFICATION)
     @PostMapping("/post")
