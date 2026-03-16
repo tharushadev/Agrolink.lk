@@ -21,7 +21,19 @@ public class ProjectUpdateController {
 
     // 1. Farmer posts an update (Defaults to PENDING_VERIFICATION)
     @PostMapping("/post")
-    public ResponseEntity<ProjectUpdate> postUpdate(@RequestBody ProjectUpdate update) {
+    public ResponseEntity<?> postUpdate(@RequestBody ProjectUpdate update) {
+        if (update.getProjectId() == null || update.getProjectId().isBlank()) {
+            return ResponseEntity.badRequest().body("projectId is required");
+        }
+
+        if (update.getFarmerId() == null || update.getFarmerId().isBlank()) {
+            return ResponseEntity.badRequest().body("farmerId is required");
+        }
+
+        if (update.getContent() == null || update.getContent().isBlank()) {
+            return ResponseEntity.badRequest().body("content is required");
+        }
+
         update.setStatus(ProjectUpdate.UpdateStatus.PENDING_VERIFICATION);
         return ResponseEntity.ok(updateRepository.save(update));
     }
