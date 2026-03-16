@@ -67,4 +67,11 @@ public class ProjectUpdateController {
                 .toList();
         return ResponseEntity.ok(verifiedUpdates);
     }
+
+    // 5. Get verified update count for a project
+    @GetMapping("/project/{projectId}/verified-count")
+    public ResponseEntity<Long> getVerifiedUpdateCount(@PathVariable String projectId) {
+        long count = updateRepository.countByProjectIdAndStatus(projectId, ProjectUpdate.UpdateStatus.VERIFIED);
+        return ResponseEntity.ok(count);
+    }
 }

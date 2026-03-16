@@ -8,4 +8,6 @@ public interface ProjectUpdateRepository extends MongoRepository<ProjectUpdate, 
     List<ProjectUpdate> findByProjectIdOrderByTimestampDesc(String projectId);
 
     List<ProjectUpdate> findByStatus(ProjectUpdate.UpdateStatus status);
+
+    long countByProjectIdAndStatus(String projectId, ProjectUpdate.UpdateStatus status);
 }
