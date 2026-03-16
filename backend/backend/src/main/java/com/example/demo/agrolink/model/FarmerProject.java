@@ -1,6 +1,7 @@
 package com.example.demo.agrolink.model;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
@@ -20,6 +21,8 @@ public class FarmerProject {
 
     @Id
     private String id;
+
+    @Indexed
     private String farmerId; // Links this project to a specific Farmer/User
     private String projectName; // e.g., "Maha Season Rice"
     private String location; // e.g., "Kandy"
