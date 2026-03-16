@@ -4,6 +4,7 @@ import com.example.demo.agrolink.model.FarmerProject;
 import com.example.demo.agrolink.repository.FarmerProjectRepository;
 import com.example.demo.agrolink.service.FarmerProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -46,7 +47,7 @@ public class FarmerProjectController {
 
     // 5. Update a Project
     @PutMapping("/update/{id}")
-    public FarmerProject updateProject(@PathVariable String id, @RequestBody FarmerProject updatedData) {
+    public ResponseEntity<?> updateProject(@PathVariable String id, @RequestBody FarmerProject updatedData) {
         return projectRepository.findById(id)
                 .map(project -> {
                     project.setProjectName(updatedData.getProjectName());
@@ -54,9 +55,9 @@ public class FarmerProjectController {
                     project.setCropType(updatedData.getCropType());
                     project.setExpectedYield(updatedData.getExpectedYield());
                     project.setStartDate(updatedData.getStartDate());
-                    return projectRepository.save(project);
+                    return ResponseEntity.ok(projectRepository.save(project));
                 })
-                .orElse(null); // Return null if not found
+                .orElse(ResponseEntity.notFound().build());
     }
 
     // --- ADMIN & INVESTOR ENDPOINTS ---
