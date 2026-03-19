@@ -145,6 +145,10 @@ public class AuthController {
             return ResponseEntity.badRequest().body("username is required");
         }
 
+        if (!isValidPassword(password)) {
+            return ResponseEntity.badRequest().body("password must be between 8 and 72 characters");
+        }
+
         if (normalizedNic == null || !isValidSriLankanNic(normalizedNic)) {
             return ResponseEntity.badRequest().body("Invalid NIC format for FARMER role");
         }
@@ -211,5 +215,9 @@ public class AuthController {
 
     private boolean isValidSriLankanNic(String nic) {
         return nic != null && NIC_PATTERN.matcher(nic).matches();
+    }
+
+    private boolean isValidPassword(String password) {
+        return password != null && password.length() >= 8 && password.length() <= 72;
     }
 }
