@@ -7,6 +7,8 @@ import org.springframework.data.mongodb.core.index.Indexed;
 
 import java.util.Date;
 
+import java.util.List;
+
 @Document(collection = "users")
 public class User {
     @Id
@@ -22,6 +24,8 @@ public class User {
     @Indexed(unique = true, sparse = true)
     private String nic; // Only for Farmers
     private Date lastLoginAt;
+    private List<String> farmerDocumentPaths;
+    private List<String> farmerDocumentOriginalNames;
 
     // Constructors
     public User() {
@@ -71,6 +75,14 @@ public class User {
         return nic;
     }
 
+    public List<String> getFarmerDocumentPaths() {
+        return farmerDocumentPaths;
+    }
+
+    public List<String> getFarmerDocumentOriginalNames() {
+        return farmerDocumentOriginalNames;
+    }
+
     public void setNic(String nic) {
         this.nic = nic;
     }
@@ -81,5 +93,13 @@ public class User {
 
     public void setLastLoginAt(Date lastLoginAt) {
         this.lastLoginAt = lastLoginAt;
+    }
+
+    public void setFarmerDocumentPaths(List<String> farmerDocumentPaths) {
+        this.farmerDocumentPaths = farmerDocumentPaths;
+    }
+
+    public void setFarmerDocumentOriginalNames(List<String> farmerDocumentOriginalNames) {
+        this.farmerDocumentOriginalNames = farmerDocumentOriginalNames;
     }
 }

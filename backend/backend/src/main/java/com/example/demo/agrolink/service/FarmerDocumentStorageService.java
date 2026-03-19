@@ -1,0 +1,84 @@
+package com.example.demo.agrolink.service;
+
+import com.example.demo.agrolink.dto.StoredFarmerDocument;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.util.List;
+import java.util.UUID;
+
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+
+@Service
+public class FarmerDocumentStorageService {
+
+	@Value("${app.uploads.farmer-documents-dir}")
+	private String uploadDirectory;
+    
+	private Path getUploadDirectoryPath() {
+		return Path.of(uploadDirectory).toAbsolutePath().normalize();
+	}
+
+	private Path ensureUploadDirectoryExists() throws IOException {
+		Path directoryPath = getUploadDirectoryPath();
+		Files.createDirectories(directoryPath);
+		return directoryPath;
+	}
+
+	private void validatePdfFile(MultipartFile document) {
+		String originalName = document.getOriginalFilename();
+		boolean hasPdfExtension = originalName != null && originalName.toLowerCase().endsWith(".pdf");
+		boolean hasPdfContentType = "application/pdf".equalsIgnoreCase(document.getContentType());
+
+		if (document.isEmpty() || (!hasPdfExtension && !hasPdfContentType)) {
+			throw new ResponseStatusException(BAD_REQUEST, "Only non-empty PDF files are allowed for farmer signup.");
+		}
+	}
+
+	private String sanitizeFilename(String originalName) {
+		if (originalName == null || originalName.isBlank()) {
+			return "document.pdf";
+		}
+
+		return Path.of(originalName)
+				.getFileName()
+				.toString()
+				.replaceAll("[^a-zA-Z0-9._-]", "_");
+	}
+
+	private String buildStoredFilename(String originalName) {
+		return UUID.randomUUID() + "-" + sanitizeFilename(originalName);
+	}
+
+	public StoredFarmerDocument storeDocument(MultipartFile document) {
+		validatePdfFile(document);
+
+		try {
+			String originalName = sanitizeFilename(document.getOriginalFilename());
+			Path uploadPath = ensureUploadDirectoryExists();
+			Path storedPath = uploadPath.resolve(buildStoredFilename(originalName));
+
+			Files.copy(document.getInputStream(), storedPath, StandardCopyOption.REPLACE_EXISTING);
+			return new StoredFarmerDocument(storedPath.toString(), originalName);
+		} catch (IOException exception) {
+			throw new ResponseStatusException(INTERNAL_SERVER_ERROR, "Failed to store farmer signup document.", exception);
+		}
+	}
+
+	public List<StoredFarmerDocument> storeDocuments(List<MultipartFile> documents) {
+		if (documents == null || documents.isEmpty()) {
+			throw new ResponseStatusException(BAD_REQUEST, "At least one PDF file is required for farmer signup.");
+		}
+
+		return documents.stream()
+				.map(this::storeDocument)
+				.toList();
+	}
+}
