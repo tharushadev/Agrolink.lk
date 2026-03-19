@@ -1,0 +1,10 @@
+package com.agrolink.repository;
+
+import com.agrolink.model.User;
+import org.springframework.data.mongodb.repository.MongoRepository;
+import java.util.Optional;
+
+public interface UserRepository extends MongoRepository<User, String> {
+    // ✅ We search the database using Phone Number now!
+    Optional<User> findByPhoneNumber(String phoneNumber);
+}
