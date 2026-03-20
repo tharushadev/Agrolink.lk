@@ -1,20 +1,27 @@
 package com.example.demo.agrolink.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.index.Indexed;
 
-import java.util.List;
+import java.util.Date;
 
 @Document(collection = "users")
 public class User {
     @Id
     private String id;
+
+    @Indexed(unique = true)
     private String username; // This will be the Email
+
+    @JsonIgnore
     private String password; // In a real app, we encrypt this!
-    private String role; // "FARMER" or "INVESTOR"
+    private String role; // "FARMER", "INVESTOR", or "ADMIN"
+
+    @Indexed(unique = true, sparse = true)
     private String nic; // Only for Farmers
-    private List<String> farmerDocumentPaths;
-    private List<String> farmerDocumentOriginalNames;
+    private Date lastLoginAt;
 
     // Constructors
     public User() {
@@ -64,23 +71,15 @@ public class User {
         return nic;
     }
 
-    public List<String> getFarmerDocumentPaths() {
-        return farmerDocumentPaths;
-    }
-
-    public List<String> getFarmerDocumentOriginalNames() {
-        return farmerDocumentOriginalNames;
-    }
-
     public void setNic(String nic) {
         this.nic = nic;
     }
 
-    public void setFarmerDocumentPaths(List<String> farmerDocumentPaths) {
-        this.farmerDocumentPaths = farmerDocumentPaths;
+    public Date getLastLoginAt() {
+        return lastLoginAt;
     }
 
-    public void setFarmerDocumentOriginalNames(List<String> farmerDocumentOriginalNames) {
-        this.farmerDocumentOriginalNames = farmerDocumentOriginalNames;
+    public void setLastLoginAt(Date lastLoginAt) {
+        this.lastLoginAt = lastLoginAt;
     }
 }

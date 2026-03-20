@@ -1,0 +1,89 @@
+### AGROLINK API TESTS
+# You can run these tests using the "REST Client" extension in VS Code.
+# Just click the "Send Request" button above any of the requests below.
+
+@baseUrl = http://localhost:8080/api
+
+### 1. Register a Farmer
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+    "username": "farmer_kamal@email.com",
+    "password": "password123",
+    "role": "FARMER",
+    "nic": "901234567V"
+}
+
+
+### 2. Register an Admin (For Testing Approvals)
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+    "username": "admin_sunil@email.com",
+    "password": "adminpass",
+    "role": "ADMIN"
+}
+
+
+### 3. Login as Farmer (Copy the 'userId' from the response!)
+# @name farmerLogin
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+    "username": "farmer_kamal@email.com",
+    "password": "password123"
+}
+
+
+### 4. Create a Farmer Project
+# Note: In a real flow, you'd extract the Farmer's ID from the login.
+# For now, replace "FARMER_ID_HERE" with the ID you got from Login!
+POST {{baseUrl}}/projects/create
+Content-Type: application/json
+
+{
+    "farmerId": "FARMER_ID_HERE",
+    "projectName": "Maha Season Rice - 2026",
+    "location": "Anuradhapura",
+    "cropType": "Rice",
+    "expectedYield": "1500kg",
+    "startDate": "2026-03-01",
+    "mediaUrls": ["https://example.com/field_image.jpg"]
+}
+
+
+### 5. Admin View Pending Projects (Copy the 'id' of the project created above)
+GET {{baseUrl}}/projects/pending
+
+
+### 6. Admin Approve the Project
+# Replace "PROJECT_ID_HERE" with the ID of the Pending Project!
+POST {{baseUrl}}/projects/PROJECT_ID_HERE/approve
+Content-Type: application/json
+
+{
+    "totalFundingGoal": 250000,
+    "minimumFundingToStart": 100000,
+    "minimumInvestmentPerInvestor": 5000,
+    "verifiedExpectedYield": "1450kg",
+    "estimatedIncome": "300000"
+}
+
+
+### 7. View All Approved Projects (What Investors See)
+GET {{baseUrl}}/projects/approved
+
+
+### 8. Invest in a Project
+# Replace the IDs below!
+POST {{baseUrl}}/investments/invest
+Content-Type: application/json
+
+{
+    "projectId": "PROJECT_ID_HERE",
+    "investorId": "INVESTOR_ID_HERE",
+    "amount": 50000
+}
