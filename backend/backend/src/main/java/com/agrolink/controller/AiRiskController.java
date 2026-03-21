@@ -8,6 +8,7 @@ import com.agrolink.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.agrolink.util.DistrictMapper; // ✅ Imported your mapper
 
 import java.util.HashMap;
 import java.util.Map;
@@ -41,20 +42,27 @@ public class AiRiskController {
         User user = optUser.get();
 
         // 3. Determine District and Season
-        // Using 'location' from FarmerProject as the district
-        String district = project.getLocation() != null ? project.getLocation() : "Unknown";
+        // Grab the raw town/city name from the project
+        String rawLocation = project.getLocation() != null ? project.getLocation() : "Unknown";
+
+        // ✅ NEW: Map it to the proper parent District using our utility!
+        String mappedDistrict = DistrictMapper.getDistrict(rawLocation);
+
         // Front-end or Project creation logic should provide season (defaulting to Maha)
         String season = "Maha";
 
         // 4. Calculate Risk
-        var riskResult = riskService.calculateHybridRisk(user, district, season);
+        // Pass the MAPPED district into the AI engine so it successfully finds the JSON data
+        var riskResult = riskService.calculateHybridRisk(user, mappedDistrict, season);
 
         // 5. Format Response
         Map<String, Object> response = new HashMap<>();
         response.put("riskScore", riskResult.baseRiskScore);
         response.put("riskLevel", riskResult.riskLabel);
         response.put("color", getRiskColor(riskResult.riskLabel));
-        response.put("description", "AI Hybrid Analysis for " + district + " based on farmer credibility (" +
+
+        // Notice we use the rawLocation here so the mobile app still says "Analysis for Dehiwala-Mount Lavinia"
+        response.put("description", "AI Hybrid Analysis for " + rawLocation + " based on farmer credibility (" +
                 user.getProfileStrength() + "% profile strength) and historical district yields.");
 
         return ResponseEntity.ok(response);
