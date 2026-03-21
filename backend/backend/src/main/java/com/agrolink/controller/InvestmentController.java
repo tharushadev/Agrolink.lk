@@ -2,8 +2,11 @@ package com.agrolink.controller;
 
 import com.agrolink.model.FarmerProject;
 import com.agrolink.model.Investment;
+import com.agrolink.model.User;
 import com.agrolink.repository.FarmerProjectRepository;
 import com.agrolink.repository.InvestmentRepository;
+import com.agrolink.repository.UserRepository;
+import com.agrolink.service.AgreementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +25,13 @@ public class InvestmentController {
 
     @Autowired
     private FarmerProjectRepository projectRepository;
+
+    // ✅ Added UserRepository to fetch names for the agreement
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private AgreementService agreementService;
 
     // 1. Make an investment
     @PostMapping("/invest")
@@ -47,9 +57,31 @@ public class InvestmentController {
             return ResponseEntity.badRequest().body("Project is not currently open for investment");
         }
 
-        // Save Investment
+        // Save Investment first to get the unique ID
         Investment investment = new Investment(projectId, investorId, amount);
         investmentRepository.save(investment);
+
+        // ✅ FETCH NAMES FOR THE LEGAL AGREEMENT
+        String investorName = "AgroLink Investor";
+        Optional<User> optInvestor = userRepository.findById(investorId);
+        if (optInvestor.isPresent()) {
+            investorName = optInvestor.get().getFirstName() + " " + optInvestor.get().getLastName();
+        }
+
+        String farmerName = "AgroLink Farmer";
+        Optional<User> optFarmer = userRepository.findById(project.getFarmerId());
+        if (optFarmer.isPresent()) {
+            farmerName = optFarmer.get().getFirstName() + " " + optFarmer.get().getLastName();
+        }
+
+        // ✅ GENERATE THE PDF AGREEMENT
+        String pdfPath = agreementService.generateInvestmentAgreement(
+                investorName,
+                farmerName,
+                project.getProjectTitle(),
+                amount,
+                investment.getId()
+        );
 
         // Update Project Funding
         Double newCurrent = project.getCurrentFundingAmount() + amount;
@@ -65,7 +97,8 @@ public class InvestmentController {
         return ResponseEntity.ok(Map.of(
                 "message", "Investment successful!",
                 "investment", investment,
-                "projectStatus", project.getStatus()
+                "projectStatus", project.getStatus(),
+                "agreementPath", pdfPath != null ? pdfPath : "PDF Generation Failed" // ✅ Return the path
         ));
     }
 

@@ -14,6 +14,7 @@ public class Investment {
     private String investorId;
     private Double amount;
     private Date timestamp;
+    private String agreementUrl;
 
     public Investment() {
         this.timestamp = new Date();
@@ -53,4 +54,8 @@ public class Investment {
     public void setInvestmentDate(Date investmentDate) {
         this.investmentDate = investmentDate;
     }
+
+    // Generate the Getter and Setter for it!
+    public String getAgreementUrl() { return agreementUrl; }
+    public void setAgreementUrl(String agreementUrl) { this.agreementUrl = agreementUrl; }
 }
