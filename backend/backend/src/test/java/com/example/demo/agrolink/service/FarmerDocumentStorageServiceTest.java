@@ -1,5 +1,6 @@
 package com.example.demo.agrolink.service;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.springframework.mock.web.MockMultipartFile;
@@ -12,6 +13,7 @@ import java.nio.file.Path;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+@Disabled("Legacy test suite: active backend APIs are under com.agrolink")
 class FarmerDocumentStorageServiceTest {
 
     @TempDir

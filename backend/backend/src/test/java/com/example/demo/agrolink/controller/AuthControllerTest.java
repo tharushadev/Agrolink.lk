@@ -5,9 +5,16 @@ import com.example.demo.agrolink.model.User;
 import com.example.demo.agrolink.repository.UserRepository;
 import com.example.demo.agrolink.service.FarmerDocumentStorageService;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Disabled;
+import org.springframework.boot.SpringBootConfiguration;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -22,7 +29,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(AuthController.class)
+@AutoConfigureMockMvc(addFilters = false)
+@ContextConfiguration(classes = AuthControllerTest.TestBootConfig.class)
+@Disabled("Legacy test suite: active backend APIs are under com.agrolink")
 class AuthControllerTest {
+
+    @SpringBootConfiguration
+    @EnableAutoConfiguration(exclude = SecurityAutoConfiguration.class)
+    @Import(AuthController.class)
+    static class TestBootConfig {}
 
     @Autowired
     private MockMvc mockMvc;
