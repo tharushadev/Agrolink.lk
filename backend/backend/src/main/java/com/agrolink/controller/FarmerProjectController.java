@@ -86,4 +86,28 @@ public class FarmerProjectController {
         projectRepository.deleteById(id);
         return ResponseEntity.ok("Project deleted by Gov Officer.");
     }
+
+    // 8. Fetch ALL projects for the Investor Dashboard
+    @GetMapping("/all")
+    public ResponseEntity<?> getAllProjects() {
+        try {
+            // ✅ FIXED: Now using the lowercase 'projectRepository' instance variable
+            List<FarmerProject> allProjects = projectRepository.findAll();
+            return ResponseEntity.ok(allProjects);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("Error fetching projects: " + e.getMessage());
+        }
+    }
+
+    // 9. Fetch a single project by ID for the Project Details screen
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getProjectById(@PathVariable String id) {
+        Optional<FarmerProject> project = projectRepository.findById(id);
+
+        if (project.isPresent()) {
+            return ResponseEntity.ok(project.get());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }
