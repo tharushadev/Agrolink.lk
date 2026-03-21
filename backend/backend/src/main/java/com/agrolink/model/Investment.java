@@ -41,4 +41,16 @@ public class Investment {
 
     public Date getTimestamp() { return timestamp; }
     public void setTimestamp(Date timestamp) { this.timestamp = timestamp; }
+
+    // Add this near your other variables at the top
+    private Date investmentDate = new Date(); // Automatically saves the exact moment they invest
+
+    // Add these Getter & Setter methods at the bottom
+    public Date getInvestmentDate() {
+        return investmentDate;
+    }
+
+    public void setInvestmentDate(Date investmentDate) {
+        this.investmentDate = investmentDate;
+    }
 }
