@@ -1,5 +1,6 @@
 package com.agrolink.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.Date;
@@ -11,12 +12,14 @@ public class User {
     @Id
     private String id;
 
-
+    private String email;
     private String firstName;
     private String address;
     private List<String> skills = new ArrayList<>();
     private String lastName;
     private String phoneNumber;
+
+    @JsonIgnore
     private String password;
     private String role;
     private String nic;
@@ -47,6 +50,9 @@ public class User {
 
     public String getFirstName() { return firstName; }
     public void setFirstName(String firstName) { this.firstName = firstName; }
+
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 
     public String getLastName() { return lastName; }
     public void setLastName(String lastName) { this.lastName = lastName; }
