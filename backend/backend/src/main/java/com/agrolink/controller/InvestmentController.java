@@ -15,6 +15,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
+import java.io.File;
+
 @RestController
 @RequestMapping("/api/investments")
 @CrossOrigin(origins = "*")
@@ -41,64 +45,67 @@ public class InvestmentController {
         Double amount = Double.valueOf(requestData.get("amount").toString());
 
         Optional<FarmerProject> optProject = projectRepository.findById(projectId);
-        if (!optProject.isPresent()) {
-            return ResponseEntity.badRequest().body("Project not found");
-        }
+        if (!optProject.isPresent()) return ResponseEntity.badRequest().body("Project not found");
 
         FarmerProject project = optProject.get();
 
-        // Check Minimum Investment amount
         if (project.getMinimumInvestment() != null && amount < project.getMinimumInvestment()) {
-            return ResponseEntity.badRequest().body("Amount is less than the minimum investment: " + project.getMinimumInvestment());
+            return ResponseEntity.badRequest().body("Amount is less than the minimum investment.");
         }
 
-        // Check if project is taking funds (Must be approved by Gov Officer)
         if (project.getStatus() != FarmerProject.ProjectStatus.FUNDING) {
-            return ResponseEntity.badRequest().body("Project is not currently open for investment");
+            return ResponseEntity.badRequest().body("Project is not open for investment.");
         }
 
-        // Save Investment first to get the unique ID
         Investment investment = new Investment(projectId, investorId, amount);
         investmentRepository.save(investment);
 
-        // ✅ FETCH NAMES FOR THE LEGAL AGREEMENT
+        // Fetch Names
         String investorName = "AgroLink Investor";
         Optional<User> optInvestor = userRepository.findById(investorId);
-        if (optInvestor.isPresent()) {
-            investorName = optInvestor.get().getFirstName() + " " + optInvestor.get().getLastName();
-        }
+        if (optInvestor.isPresent()) investorName = optInvestor.get().getFirstName() + " " + optInvestor.get().getLastName();
 
         String farmerName = "AgroLink Farmer";
         Optional<User> optFarmer = userRepository.findById(project.getFarmerId());
-        if (optFarmer.isPresent()) {
-            farmerName = optFarmer.get().getFirstName() + " " + optFarmer.get().getLastName();
-        }
+        if (optFarmer.isPresent()) farmerName = optFarmer.get().getFirstName() + " " + optFarmer.get().getLastName();
 
-        // ✅ GENERATE THE PDF AGREEMENT
-        String pdfPath = agreementService.generateInvestmentAgreement(
-                investorName,
-                farmerName,
-                project.getProjectTitle(),
-                amount,
-                investment.getId()
-        );
+        // 1. Generate Local PDF
+        String pdfPath = agreementService.generateInvestmentAgreement(investorName, farmerName, project.getProjectTitle(), amount, investment.getId());
+
+        // 2. Upload to Cloudinary
+        try {
+
+            Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
+                    "cloud_name", "dhnl8fkno",
+                    "api_key", "181573255974771",
+                    "api_secret", "fDE61ZcH1doZGjNpAcz4NtixWY4"));
+
+            File fileToUpload = new File(pdfPath);
+            Map uploadResult = cloudinary.uploader().upload(fileToUpload, ObjectUtils.asMap("resource_type", "auto"));
+
+            // 3. Save URL to Database
+            String cloudUrl = uploadResult.get("secure_url").toString();
+            investment.setAgreementUrl(cloudUrl);
+            investmentRepository.save(investment);
+
+            // Optional: Delete the local file after successful upload to save server space
+            fileToUpload.delete();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Cloudinary Upload Failed!");
+        }
 
         // Update Project Funding
         Double newCurrent = project.getCurrentFundingAmount() + amount;
         project.setCurrentFundingAmount(newCurrent);
-
-        // Auto-change status to IN_PROGRESS if funding goal is reached
-        if (newCurrent >= project.getFundingGoal()) {
-            project.setStatus(FarmerProject.ProjectStatus.IN_PROGRESS);
-        }
-
+        if (newCurrent >= project.getFundingGoal()) project.setStatus(FarmerProject.ProjectStatus.IN_PROGRESS);
         projectRepository.save(project);
 
         return ResponseEntity.ok(Map.of(
                 "message", "Investment successful!",
                 "investment", investment,
-                "projectStatus", project.getStatus(),
-                "agreementPath", pdfPath != null ? pdfPath : "PDF Generation Failed" // ✅ Return the path
+                "projectStatus", project.getStatus()
         ));
     }
 
