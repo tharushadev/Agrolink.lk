@@ -9,7 +9,6 @@ POST {{baseUrl}}/auth/signup
 Content-Type: application/json
 
 {
-    "email": "farmer_kamal@email.com",
     "password": "password123",
     "role": "FARMER",
     "firstName": "Kamal",
@@ -26,7 +25,6 @@ POST {{baseUrl}}/auth/signup
 Content-Type: application/json
 
 {
-    "email": "investor_nimal@email.com",
     "password": "investorpass",
     "role": "INVESTOR",
     "firstName": "Nimal",
@@ -42,7 +40,7 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-    "email": "farmer_kamal@email.com",
+    "phoneNumber": "0771234567",
     "password": "password123",
     "role": "FARMER"
 }
@@ -54,7 +52,7 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-    "email": "investor_nimal@email.com",
+    "phoneNumber": "0715550000",
     "password": "investorpass",
     "role": "INVESTOR"
 }

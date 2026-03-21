@@ -35,6 +35,27 @@ public class DemoDataSeeder implements ApplicationRunner {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    private String normalizePhone(String phoneNumber) {
+        if (phoneNumber == null) {
+            return null;
+        }
+        String trimmed = phoneNumber.trim();
+        if (trimmed.isEmpty()) {
+            return "";
+        }
+        String digits = trimmed.replaceAll("\\D", "");
+        if (digits.isEmpty()) {
+            return "";
+        }
+        if (digits.startsWith("94") && digits.length() == 11) {
+            digits = "0" + digits.substring(2);
+        }
+        if (digits.length() == 9) {
+            digits = "0" + digits;
+        }
+        return digits;
+    }
+
     @Override
     public void run(ApplicationArguments args) {
         if (!seedDemoUsers) {
@@ -58,45 +79,45 @@ public class DemoDataSeeder implements ApplicationRunner {
         if (demoUser == null) {
             return;
         }
-        if (demoUser.getEmail() == null || demoUser.getEmail().trim().isEmpty()) {
-            log.warn("Skipping demo user with missing email");
-            return;
-        }
         if (demoUser.getPassword() == null || demoUser.getPassword().trim().isEmpty()) {
-            log.warn("Skipping demo user with missing password: email={}", demoUser.getEmail());
+            log.warn("Skipping demo user with missing password");
             return;
         }
         if (demoUser.getRole() == null || demoUser.getRole().trim().isEmpty()) {
-            log.warn("Skipping demo user with missing role: email={}", demoUser.getEmail());
+            log.warn("Skipping demo user with missing role");
             return;
         }
         if (demoUser.getNic() == null || demoUser.getNic().trim().isEmpty()) {
-            log.warn("Skipping demo user with missing NIC: email={}", demoUser.getEmail());
+            log.warn("Skipping demo user with missing NIC");
             return;
         }
         if (demoUser.getPhoneNumber() == null || demoUser.getPhoneNumber().trim().isEmpty()) {
-            log.warn("Skipping demo user with missing phoneNumber: email={}", demoUser.getEmail());
+            log.warn("Skipping demo user with missing phoneNumber");
             return;
         }
 
-        String normalizedEmail = demoUser.getEmail().trim().toLowerCase(Locale.ROOT);
+        String normalizedPhone = normalizePhone(demoUser.getPhoneNumber());
+        if (normalizedPhone == null || normalizedPhone.isEmpty()) {
+            log.warn("Skipping demo user with invalid phoneNumber");
+            return;
+        }
+
         String normalizedRole = demoUser.getRole().trim().toUpperCase(Locale.ROOT);
 
-        Optional<User> existing = userRepository.findByEmailIgnoreCase(normalizedEmail);
+        Optional<User> existing = userRepository.findByPhoneNumber(normalizedPhone);
         if (existing.isPresent() && !forceOverwrite) {
-            log.info("Demo user already exists; skipping: email={}, role={}", normalizedEmail, normalizedRole);
+            log.info("Demo user already exists; skipping: phone={}, role={}", maskPhone(normalizedPhone), normalizedRole);
             return;
         }
 
         boolean isUpdate = existing.isPresent();
 
         User user = existing.orElseGet(User::new);
-        user.setEmail(normalizedEmail);
         user.setRole(normalizedRole);
         user.setPassword(passwordEncoder.encode(demoUser.getPassword().trim()));
 
         user.setNic(demoUser.getNic().trim());
-        user.setPhoneNumber(demoUser.getPhoneNumber().trim());
+        user.setPhoneNumber(normalizedPhone);
         user.setFirstName(demoUser.getFirstName());
         user.setLastName(demoUser.getLastName());
 
@@ -110,9 +131,17 @@ public class DemoDataSeeder implements ApplicationRunner {
         userRepository.save(user);
 
         if (isUpdate) {
-            log.info("Demo user updated: email={}, role={}", normalizedEmail, normalizedRole);
+            log.info("Demo user updated: phone={}, role={}", maskPhone(normalizedPhone), normalizedRole);
         } else {
-            log.info("Demo user created: email={}, role={}", normalizedEmail, normalizedRole);
+            log.info("Demo user created: phone={}, role={}", maskPhone(normalizedPhone), normalizedRole);
         }
+    }
+
+    private String maskPhone(String phone) {
+        if (phone == null || phone.isEmpty()) {
+            return "";
+        }
+        int keep = Math.min(3, phone.length());
+        return "***" + phone.substring(phone.length() - keep);
     }
 }

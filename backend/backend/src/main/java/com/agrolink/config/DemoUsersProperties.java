@@ -23,7 +23,6 @@ public class DemoUsersProperties {
     }
 
     public static class DemoUser {
-        private String email;
         private String password;
         private String role;
         private String nic;
@@ -32,14 +31,6 @@ public class DemoUsersProperties {
         private String lastName;
         private String profileImageUrl;
         private String gnCertificateUrl;
-
-        public String getEmail() {
-            return email;
-        }
-
-        public void setEmail(String email) {
-            this.email = email;
-        }
 
         public String getPassword() {
             return password;

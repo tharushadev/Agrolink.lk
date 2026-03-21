@@ -1,0 +1,599 @@
+{
+  "info": {
+    "name": "AgroLink API (Local)",
+    "description": "AgroLink backend API collection for local testing. Auth is phone-only. If you have multiple backend processes running, point baseUrl to the active one (currently http://localhost:8083/api).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8083/api" },
+    { "key": "investor1Phone", "value": "0715550001" },
+    { "key": "investor1Nic", "value": "200012345678" },
+    { "key": "investor2Phone", "value": "0715550002" },
+    { "key": "investor2Nic", "value": "200112345679" },
+    { "key": "farmer1Phone", "value": "0771234568" },
+    { "key": "farmer1Nic", "value": "199912345670" },
+    { "key": "farmer2Phone", "value": "0771234569" },
+    { "key": "farmer2Nic", "value": "199812345671" },
+    { "key": "farmerId", "value": "FARMER_ID_HERE" },
+    { "key": "investorId", "value": "INVESTOR_ID_HERE" },
+    { "key": "projectId", "value": "PROJECT_ID_HERE" },
+    { "key": "updateId", "value": "UPDATE_ID_HERE" },
+    { "key": "conversationId", "value": "CONVERSATION_ID_HERE" }
+  ],
+  "item": [
+    {
+      "name": "Diagnostics",
+      "item": [
+        {
+          "name": "Mongo Connection + Users Count",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/diagnostics/mongo", "host": ["{{baseUrl}}"], "path": ["diagnostics", "mongo"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Signup (Investor 1)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Auto-generate unique values on each signup run",
+                  "const suffix = (Date.now() % 100000000).toString().padStart(8, '0');",
+                  "pm.collectionVariables.set('investor1Phone', `07${suffix}`);",
+                  "pm.collectionVariables.set('investor1Nic', `2000${suffix}`);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/auth/signup", "host": ["{{baseUrl}}"], "path": ["auth", "signup"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"role\": \"INVESTOR\",\n  \"phoneNumber\": \"{{investor1Phone}}\",\n  \"password\": \"investorpass\",\n  \"nic\": \"{{investor1Nic}}\",\n  \"firstName\": \"Nimal\",\n  \"lastName\": \"Silva\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Signup (Investor 2)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Auto-generate unique values on each signup run",
+                  "const suffix = ((Date.now() + 1234) % 100000000).toString().padStart(8, '0');",
+                  "pm.collectionVariables.set('investor2Phone', `07${suffix}`);",
+                  "pm.collectionVariables.set('investor2Nic', `2001${suffix}`);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/auth/signup", "host": ["{{baseUrl}}"], "path": ["auth", "signup"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"role\": \"INVESTOR\",\n  \"phoneNumber\": \"{{investor2Phone}}\",\n  \"password\": \"investorpass\",\n  \"nic\": \"{{investor2Nic}}\",\n  \"firstName\": \"Sunil\",\n  \"lastName\": \"Fernando\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Signup (Farmer 1)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Auto-generate unique values on each signup run",
+                  "const suffix = ((Date.now() + 1) % 100000000).toString().padStart(8, '0');",
+                  "pm.collectionVariables.set('farmer1Phone', `07${suffix}`);",
+                  "pm.collectionVariables.set('farmer1Nic', `1999${suffix}`);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/auth/signup", "host": ["{{baseUrl}}"], "path": ["auth", "signup"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"role\": \"FARMER\",\n  \"phoneNumber\": \"{{farmer1Phone}}\",\n  \"password\": \"password123\",\n  \"nic\": \"{{farmer1Nic}}\",\n  \"firstName\": \"Kamal\",\n  \"lastName\": \"Perera\",\n  \"farmerPhotoUrl\": \"https://example.com/farmer.jpg\",\n  \"gnCertificateUrl\": \"https://example.com/gs-certificate.pdf\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Signup (Farmer 2)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Auto-generate unique values on each signup run",
+                  "const suffix = ((Date.now() + 4321) % 100000000).toString().padStart(8, '0');",
+                  "pm.collectionVariables.set('farmer2Phone', `07${suffix}`);",
+                  "pm.collectionVariables.set('farmer2Nic', `1998${suffix}`);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/auth/signup", "host": ["{{baseUrl}}"], "path": ["auth", "signup"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"role\": \"FARMER\",\n  \"phoneNumber\": \"{{farmer2Phone}}\",\n  \"password\": \"password123\",\n  \"nic\": \"{{farmer2Nic}}\",\n  \"firstName\": \"Saman\",\n  \"lastName\": \"Jayasinghe\",\n  \"farmerPhotoUrl\": \"https://example.com/farmer2.jpg\",\n  \"gnCertificateUrl\": \"https://example.com/gs-certificate2.pdf\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login (Farmer 1)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phoneNumber\": \"{{farmer1Phone}}\",\n  \"password\": \"password123\",\n  \"role\": \"FARMER\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login (Farmer 2)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phoneNumber\": \"{{farmer2Phone}}\",\n  \"password\": \"password123\",\n  \"role\": \"FARMER\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login (Investor 1)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phoneNumber\": \"{{investor1Phone}}\",\n  \"password\": \"investorpass\",\n  \"role\": \"INVESTOR\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login (Investor 2)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phoneNumber\": \"{{investor2Phone}}\",\n  \"password\": \"investorpass\",\n  \"role\": \"INVESTOR\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Forgot Password (MVP)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/auth/forgot-password", "host": ["{{baseUrl}}"], "path": ["auth", "forgot-password"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phoneNumber\": \"{{farmer1Phone}}\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Farmer Projects",
+      "item": [
+        {
+          "name": "Create Project (Farmer)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/farmer-project/create", "host": ["{{baseUrl}}"], "path": ["farmer-project", "create"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"farmerId\": \"{{farmerId}}\",\n  \"projectTitle\": \"Maha Season Paddy - 2026\",\n  \"cropType\": \"Paddy\",\n  \"location\": \"Anuradhapura\",\n  \"fundingGoal\": 250000,\n  \"minimumInvestment\": 5000,\n  \"durationInMonths\": 4,\n  \"minRoi\": 12,\n  \"maxRoi\": 18,\n  \"description\": \"Seasonal paddy cultivation project.\",\n  \"photos\": [\"https://example.com/field_image.jpg\"]\n}"
+            }
+          }
+        },
+        {
+          "name": "List My Projects (Farmer)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/farmer-project/list/{{farmerId}}", "host": ["{{baseUrl}}"], "path": ["farmer-project", "list", "{{farmerId}}"] }
+          }
+        },
+        {
+          "name": "Active Projects (Investor feed)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/farmer-project/active", "host": ["{{baseUrl}}"], "path": ["farmer-project", "active"] }
+          }
+        },
+        {
+          "name": "All Projects (Investor dashboard)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/farmer-project/all", "host": ["{{baseUrl}}"], "path": ["farmer-project", "all"] }
+          }
+        },
+        {
+          "name": "Project Details",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/farmer-project/{{projectId}}", "host": ["{{baseUrl}}"], "path": ["farmer-project", "{{projectId}}"] }
+          }
+        },
+        {
+          "name": "Project Investors (Farmer manage)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/farmer-project/{{projectId}}/investors", "host": ["{{baseUrl}}"], "path": ["farmer-project", "{{projectId}}", "investors"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin (Projects)",
+      "item": [
+        {
+          "name": "Pending Projects",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/farmer-project/admin/pending", "host": ["{{baseUrl}}"], "path": ["farmer-project", "admin", "pending"] }
+          }
+        },
+        {
+          "name": "Edit Project",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/farmer-project/admin/edit/{{projectId}}", "host": ["{{baseUrl}}"], "path": ["farmer-project", "admin", "edit", "{{projectId}}"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"projectTitle\": \"(Edited) Maha Season Paddy - 2026\",\n  \"fundingGoal\": 260000,\n  \"minimumInvestment\": 5000,\n  \"durationInMonths\": 4,\n  \"minRoi\": 12,\n  \"maxRoi\": 18\n}"
+            }
+          }
+        },
+        {
+          "name": "Approve Project",
+          "request": {
+            "method": "POST",
+            "url": { "raw": "{{baseUrl}}/farmer-project/admin/approve/{{projectId}}", "host": ["{{baseUrl}}"], "path": ["farmer-project", "admin", "approve", "{{projectId}}"] }
+          }
+        },
+        {
+          "name": "Delete Project",
+          "request": {
+            "method": "DELETE",
+            "url": { "raw": "{{baseUrl}}/farmer-project/admin/delete/{{projectId}}", "host": ["{{baseUrl}}"], "path": ["farmer-project", "admin", "delete", "{{projectId}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Investments",
+      "item": [
+        {
+          "name": "Invest",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/investments/invest", "host": ["{{baseUrl}}"], "path": ["investments", "invest"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"projectId\": \"{{projectId}}\",\n  \"investorId\": \"{{investorId}}\",\n  \"amount\": 50000\n}"
+            }
+          }
+        },
+        {
+          "name": "Project Investments",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/investments/project/{{projectId}}", "host": ["{{baseUrl}}"], "path": ["investments", "project", "{{projectId}}"] }
+          }
+        },
+        {
+          "name": "Investor Investments",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/investments/investor/{{investorId}}", "host": ["{{baseUrl}}"], "path": ["investments", "investor", "{{investorId}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Project Updates",
+      "item": [
+        {
+          "name": "Post Update (Farmer)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/updates/post", "host": ["{{baseUrl}}"], "path": ["updates", "post"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"projectId\": \"{{projectId}}\",\n  \"farmerId\": \"{{farmerId}}\",\n  \"content\": \"Harvest started\",\n  \"mediaUrls\": [\"https://example.com/harvest.jpg\"]\n}"
+            }
+          }
+        },
+        {
+          "name": "Verified Updates (Investor feed)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/updates/project/{{projectId}}", "host": ["{{baseUrl}}"], "path": ["updates", "project", "{{projectId}}"] }
+          }
+        },
+        {
+          "name": "Manage Updates (Farmer)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/updates/project/{{projectId}}/manage?farmerId={{farmerId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["updates", "project", "{{projectId}}", "manage"],
+              "query": [{ "key": "farmerId", "value": "{{farmerId}}" }]
+            }
+          }
+        },
+        {
+          "name": "Pending Updates (Admin)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/updates/admin/pending", "host": ["{{baseUrl}}"], "path": ["updates", "admin", "pending"] }
+          }
+        },
+        {
+          "name": "Verify Update (Admin)",
+          "request": {
+            "method": "POST",
+            "url": { "raw": "{{baseUrl}}/updates/admin/{{updateId}}/verify", "host": ["{{baseUrl}}"], "path": ["updates", "admin", "{{updateId}}", "verify"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dashboards",
+      "item": [
+        {
+          "name": "Farmer Dashboard",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/farmer/dashboard/{{farmerId}}", "host": ["{{baseUrl}}"], "path": ["farmer", "dashboard", "{{farmerId}}"] }
+          }
+        },
+        {
+          "name": "Farmer Analytics",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/farmer/analytics/{{farmerId}}", "host": ["{{baseUrl}}"], "path": ["farmer", "analytics", "{{farmerId}}"] }
+          }
+        },
+        {
+          "name": "Platform KPIs",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/dashboard/kpis", "host": ["{{baseUrl}}"], "path": ["dashboard", "kpis"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "AI",
+      "item": [
+        {
+          "name": "Project Risk",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/ai/risk/{{projectId}}", "host": ["{{baseUrl}}"], "path": ["ai", "risk", "{{projectId}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Get User",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/users/{{farmerId}}", "host": ["{{baseUrl}}"], "path": ["users", "{{farmerId}}"] }
+          }
+        },
+        {
+          "name": "Trust Score Breakdown",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/users/{{farmerId}}/trust-score", "host": ["{{baseUrl}}"], "path": ["users", "{{farmerId}}", "trust-score"] }
+          }
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/users/{{farmerId}}", "host": ["{{baseUrl}}"], "path": ["users", "{{farmerId}}"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"address\": \"No 10, Main Road\",\n  \"skills\": [\"Paddy\", \"Irrigation\"]\n}"
+            }
+          }
+        },
+        {
+          "name": "Update Email (after login)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/users/{{farmerId}}", "host": ["{{baseUrl}}"], "path": ["users", "{{farmerId}}"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Update Profile Image",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/users/{{farmerId}}/profile-image", "host": ["{{baseUrl}}"], "path": ["users", "{{farmerId}}", "profile-image"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"imageUrl\": \"https://example.com/new-profile.jpg\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/users/{{farmerId}}/password", "host": ["{{baseUrl}}"], "path": ["users", "{{farmerId}}", "password"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentPassword\": \"password123\",\n  \"newPassword\": \"password456\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Payment (MVP)",
+      "item": [
+        {
+          "name": "Get Payment Account",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/profile/payment/{{farmerId}}", "host": ["{{baseUrl}}"], "path": ["profile", "payment", "{{farmerId}}"] }
+          }
+        },
+        {
+          "name": "Link Bank Account",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/profile/payment/link-bank-account", "host": ["{{baseUrl}}"], "path": ["profile", "payment", "link-bank-account"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{farmerId}}\",\n  \"bankName\": \"Bank of Ceylon\",\n  \"accountNumber\": \"1234567890\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Withdraw",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/profile/payment/withdraw", "host": ["{{baseUrl}}"], "path": ["profile", "payment", "withdraw"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{farmerId}}\",\n  \"amount\": 25000\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Chat (MVP)",
+      "item": [
+        {
+          "name": "List Conversations",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/chat/conversations/{{farmerId}}", "host": ["{{baseUrl}}"], "path": ["chat", "conversations", "{{farmerId}}"] }
+          }
+        },
+        {
+          "name": "Create Conversation",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/chat/conversations", "host": ["{{baseUrl}}"], "path": ["chat", "conversations"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"projectId\": \"{{projectId}}\",\n  \"participantIds\": [\"{{farmerId}}\", \"{{investorId}}\"]\n}"
+            }
+          }
+        },
+        {
+          "name": "Create Project Conversation",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/chat/conversations/project", "host": ["{{baseUrl}}"], "path": ["chat", "conversations", "project"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"projectId\": \"{{projectId}}\",\n  \"farmerId\": \"{{farmerId}}\",\n  \"investorId\": \"{{investorId}}\"\n}"
+            }
+          }
+        },
+        {
+          "name": "List Messages",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/chat/messages/{{conversationId}}", "host": ["{{baseUrl}}"], "path": ["chat", "messages", "{{conversationId}}"] }
+          }
+        },
+        {
+          "name": "Send Message",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/chat/messages", "host": ["{{baseUrl}}"], "path": ["chat", "messages"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"conversationId\": \"{{conversationId}}\",\n  \"senderId\": \"{{farmerId}}\",\n  \"text\": \"Hello!\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Support & Legal",
+      "item": [
+        {
+          "name": "Support Info",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/profile/support", "host": ["{{baseUrl}}"], "path": ["profile", "support"] }
+          }
+        },
+        {
+          "name": "Privacy Policy",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/profile/about/privacy", "host": ["{{baseUrl}}"], "path": ["profile", "about", "privacy"] }
+          }
+        },
+        {
+          "name": "Terms & Conditions",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/profile/about/terms", "host": ["{{baseUrl}}"], "path": ["profile", "about", "terms"] }
+          }
+        }
+      ]
+    }
+  ]
+}
