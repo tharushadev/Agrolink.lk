@@ -47,10 +47,16 @@ public class ProjectUpdateController {
     @GetMapping("/project/{projectId}")
     public ResponseEntity<List<ProjectUpdate>> getProjectUpdates(@PathVariable String projectId) {
         List<ProjectUpdate> allUpdates = updateRepository.findByProjectIdOrderByTimestampDesc(projectId);
-        // Filter only verified updates for the public feed
         List<ProjectUpdate> verifiedUpdates = allUpdates.stream()
                 .filter(u -> u.getStatus() == ProjectUpdate.UpdateStatus.VERIFIED)
                 .toList();
         return ResponseEntity.ok(verifiedUpdates);
+    }
+
+    // ✅ 5. NEW: Farmer & Officer need to see ALL updates (Pending + Verified) for the project timeline
+    @GetMapping("/project/{projectId}/all")
+    public ResponseEntity<List<ProjectUpdate>> getAllProjectUpdates(@PathVariable String projectId) {
+        List<ProjectUpdate> allUpdates = updateRepository.findByProjectIdOrderByTimestampDesc(projectId);
+        return ResponseEntity.ok(allUpdates);
     }
 }
