@@ -1,12 +1,18 @@
 package com.agrolink.controller;
 
 import com.agrolink.model.FarmerProject;
+import com.agrolink.model.Investment;
+import com.agrolink.model.User;
 import com.agrolink.repository.FarmerProjectRepository;
+import com.agrolink.repository.InvestmentRepository;
+import com.agrolink.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -16,6 +22,12 @@ public class FarmerProjectController {
 
     @Autowired
     private FarmerProjectRepository projectRepository;
+
+    @Autowired
+    private InvestmentRepository investmentRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     // ─── FARMER ENDPOINTS ──────────────────────────────────────────────────
 
@@ -109,5 +121,33 @@ public class FarmerProjectController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    // 10. Farmer Manage Project: list investors with investment amounts + basic profile
+    @GetMapping("/{projectId}/investors")
+    public ResponseEntity<?> getProjectInvestors(@PathVariable String projectId) {
+        List<Investment> investments = investmentRepository.findByProjectId(projectId);
+
+        List<Map<String, Object>> investors = investments.stream().map(inv -> {
+            Optional<User> userOpt = userRepository.findById(inv.getInvestorId());
+            if (userOpt.isPresent()) {
+                User u = userOpt.get();
+                Map<String, Object> row = new HashMap<>();
+                row.put("investorId", u.getId());
+                row.put("email", u.getEmail());
+                row.put("firstName", u.getFirstName());
+                row.put("lastName", u.getLastName());
+                row.put("amount", inv.getAmount());
+                row.put("timestamp", inv.getTimestamp());
+                return row;
+            }
+            Map<String, Object> row = new HashMap<>();
+            row.put("investorId", inv.getInvestorId());
+            row.put("amount", inv.getAmount());
+            row.put("timestamp", inv.getTimestamp());
+            return row;
+        }).toList();
+
+        return ResponseEntity.ok(investors);
     }
 }

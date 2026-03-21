@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -53,4 +54,21 @@ public class ProjectUpdateController {
                 .toList();
         return ResponseEntity.ok(verifiedUpdates);
     }
+
+        // 5. Farmer Manage Project: fetch all updates (pending + verified)
+        @GetMapping("/project/{projectId}/manage")
+        public ResponseEntity<?> getProjectUpdatesForManagement(
+            @PathVariable String projectId,
+            @RequestParam String farmerId
+        ) {
+        List<ProjectUpdate> allUpdates = updateRepository.findByProjectIdOrderByTimestampDesc(projectId);
+        // Only allow the farmer who created the update stream to see pending updates
+        List<ProjectUpdate> visible = allUpdates.stream()
+            .filter(u -> farmerId.equals(u.getFarmerId()))
+            .toList();
+        return ResponseEntity.ok(Map.of(
+            "projectId", projectId,
+            "updates", visible
+        ));
+        }
 }
