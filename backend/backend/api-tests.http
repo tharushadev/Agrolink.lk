@@ -4,26 +4,35 @@
 
 @baseUrl = http://localhost:8080/api
 
-### 1. Register a Farmer
-POST {{baseUrl}}/auth/register
+### 1. Sign up a Farmer
+POST {{baseUrl}}/auth/signup
 Content-Type: application/json
 
 {
-    "username": "farmer_kamal@email.com",
+    "email": "farmer_kamal@email.com",
     "password": "password123",
     "role": "FARMER",
-    "nic": "901234567V"
+    "firstName": "Kamal",
+    "lastName": "Perera",
+    "phoneNumber": "0771234567",
+    "nic": "901234567V",
+    "farmerPhotoUrl": "https://example.com/farmer.jpg",
+    "gnCertificateUrl": "https://example.com/gs-certificate.pdf"
 }
 
 
-### 2. Register an Admin (For Testing Approvals)
-POST {{baseUrl}}/auth/register
+### 2. Sign up an Investor
+POST {{baseUrl}}/auth/signup
 Content-Type: application/json
 
 {
-    "username": "admin_sunil@email.com",
-    "password": "adminpass",
-    "role": "ADMIN"
+    "email": "investor_nimal@email.com",
+    "password": "investorpass",
+    "role": "INVESTOR",
+    "firstName": "Nimal",
+    "lastName": "Silva",
+    "phoneNumber": "0715550000",
+    "nic": "200012345678"
 }
 
 
@@ -33,48 +42,95 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-    "username": "farmer_kamal@email.com",
-    "password": "password123"
+    "email": "farmer_kamal@email.com",
+    "password": "password123",
+    "role": "FARMER"
 }
 
 
-### 4. Create a Farmer Project
-# Note: In a real flow, you'd extract the Farmer's ID from the login.
-# For now, replace "FARMER_ID_HERE" with the ID you got from Login!
-POST {{baseUrl}}/projects/create
+### 4. Login as Investor (Copy the 'userId' from the response!)
+# @name investorLogin
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+    "email": "investor_nimal@email.com",
+    "password": "investorpass",
+    "role": "INVESTOR"
+}
+
+
+### 5. Create a Farmer Project (PENDING_REVIEW by default)
+# Replace FARMER_ID_HERE with the farmerLogin response userId.
+POST {{baseUrl}}/farmer-project/create
 Content-Type: application/json
 
 {
     "farmerId": "FARMER_ID_HERE",
-    "projectName": "Maha Season Rice - 2026",
+    "projectTitle": "Maha Season Paddy - 2026",
+    "cropType": "Paddy",
     "location": "Anuradhapura",
-    "cropType": "Rice",
-    "expectedYield": "1500kg",
-    "startDate": "2026-03-01",
-    "mediaUrls": ["https://example.com/field_image.jpg"]
+    "fundingGoal": 250000,
+    "minimumInvestment": 5000,
+    "durationInMonths": 4,
+    "minRoi": 12,
+    "maxRoi": 18,
+    "description": "Seasonal paddy cultivation project.",
+    "photos": ["https://example.com/field_image.jpg"]
 }
 
 
-### 5. Admin View Pending Projects (Copy the 'id' of the project created above)
-GET {{baseUrl}}/projects/pending
+### 6. Farmer Dashboard aggregate (totalRaisedLkr, alerts, active projects)
+GET {{baseUrl}}/farmer/dashboard/FARMER_ID_HERE
 
 
-### 6. Admin Approve the Project
-# Replace "PROJECT_ID_HERE" with the ID of the Pending Project!
-POST {{baseUrl}}/projects/PROJECT_ID_HERE/approve
+### 7. Investor: view all projects
+GET {{baseUrl}}/farmer-project/all
+
+
+### 8. Investor: invest in a project
+# Replace PROJECT_ID_HERE and INVESTOR_ID_HERE with real IDs.
+POST {{baseUrl}}/investments/invest
 Content-Type: application/json
 
 {
-    "totalFundingGoal": 250000,
-    "minimumFundingToStart": 100000,
-    "minimumInvestmentPerInvestor": 5000,
-    "verifiedExpectedYield": "1450kg",
-    "estimatedIncome": "300000"
+    "projectId": "PROJECT_ID_HERE",
+    "investorId": "INVESTOR_ID_HERE",
+    "amount": 50000
 }
 
 
-### 7. View All Approved Projects (What Investors See)
-GET {{baseUrl}}/projects/approved
+### 9. Farmer: manage updates (post + fetch timeline)
+POST {{baseUrl}}/updates/post
+Content-Type: application/json
+
+{
+    "projectId": "PROJECT_ID_HERE",
+    "farmerId": "FARMER_ID_HERE",
+    "content": "Harvest started",
+    "mediaUrls": ["https://example.com/harvest.jpg"]
+}
+
+### 10. Farmer: fetch all updates for management (pending + verified)
+GET {{baseUrl}}/updates/project/PROJECT_ID_HERE/manage?farmerId=FARMER_ID_HERE
+
+### 11. Shared: link bank account + withdraw simulation
+POST {{baseUrl}}/profile/payment/link-bank-account
+Content-Type: application/json
+
+{
+    "userId": "FARMER_ID_HERE",
+    "bankName": "Bank of Ceylon",
+    "accountNumber": "1234567890"
+}
+
+POST {{baseUrl}}/profile/payment/withdraw
+Content-Type: application/json
+
+{
+    "userId": "FARMER_ID_HERE",
+    "amount": 25000
+}
 
 
 ### 8. Invest in a Project
